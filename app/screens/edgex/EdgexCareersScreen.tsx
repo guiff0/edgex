@@ -3,10 +3,11 @@ import { ActivityIndicator, Pressable, View } from "react-native"
 
 import { Text } from "@/components/Text"
 import { EdgexChip } from "@/components/edgex/EdgexPrimitives"
+import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
 import type { Job } from "@/content/edgexJobs"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
-import { getJobs } from "@/services/sync/jobsSync"
+import { getJobs } from "@/services/watermelon/jobsSync"
 import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
 
@@ -33,6 +34,7 @@ export const EdgexCareersScreen: FC<EdgexCareersScreenProps> = function EdgexCar
   return (
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+        <EdgexIllustration variant="careers" height={150} style={{ marginBottom: spacing.lg }} />
         <Text
           text="CAREERS"
           style={{

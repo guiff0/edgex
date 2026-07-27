@@ -8,11 +8,30 @@ import {
   EdgexListRow,
   EdgexSection,
 } from "@/components/edgex/EdgexPrimitives"
+import { EdgexIllustration, type EdgexIllustrationVariant } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
 import { PAGES } from "@/content/edgexContent"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
 import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
+
+const PAGE_KEY_TO_ILLUSTRATION: Record<string, EdgexIllustrationVariant> = {
+  products: "products",
+  services: "services",
+  technologies: "technologies",
+  industries: "industries",
+  departments: "departments",
+  about: "about",
+  contact: "contact",
+  leadership: "leadership",
+  legal: "legal",
+  governance: "governance",
+  documentation: "documentation",
+  "api-access": "api",
+  whitepapers: "whitepapers",
+  "case-studies": "caseStudies",
+  newsroom: "newsroom",
+}
 
 interface EdgexContentScreenProps extends EdgexStackScreenProps<
   | "EdgexProducts"
@@ -46,6 +65,11 @@ export const EdgexContentScreen: FC<EdgexContentScreenProps> = function EdgexCon
   return (
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+        <EdgexIllustration
+          variant={PAGE_KEY_TO_ILLUSTRATION[pageKey] ?? "products"}
+          height={160}
+          style={{ marginBottom: spacing.lg }}
+        />
         <Text
           text={page.kicker}
           style={{

@@ -4,6 +4,7 @@ import { View } from "react-native"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
+import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
 import { isSupabaseConfigured } from "@/services/supabase/client"
@@ -38,6 +39,7 @@ export const EdgexLoginScreen: FC<EdgexLoginScreenProps> = function EdgexLoginSc
   return (
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl, maxWidth: 420 }}>
+        <EdgexIllustration variant="home" height={120} style={{ marginBottom: spacing.lg }} />
         <Text
           text="ACCOUNT"
           style={{

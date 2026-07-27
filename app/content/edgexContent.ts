@@ -41,10 +41,12 @@ export const LEFT_MENU = [
 export const HOME_CONTENT = {
   eyebrow: "QUANTUM INTELLIGENCE FOR THE ENTERPRISE",
   headline: "Engineering the next era\nof enterprise computation.",
-  body: "EDGEX engineers next-generation quantum systems, QML pipelines, custom QPUs, and nuclear-powered data centers for mission-critical workloads.",
+  body: "EDGEX engineers next-generation quantum systems, QML pipelines, custom QPUs, and nuclear-powered data centers for mission-critical workloads. We build the full stack — software, custom silicon, cryogenics, and the reactor-grade power to run it all — so clients scale past what a shared cloud QPU allocation can support.",
+  subBody:
+    "Five QPU architectures. Seven divisions, from algorithm research to nuclear-powered facility operations. One engagement model: scoped, compliant, and delivered by the division that owns the problem.",
   contactEmail: "edgex@algu.net",
   highlights: [
-    { title: "5", label: "Divisions" },
+    { title: "7", label: "Divisions" },
     { title: "5", label: "QPU Architectures" },
     { title: "6", label: "Industries Served" },
   ],
@@ -56,7 +58,7 @@ export const PAGES: Record<string, ContentPage> = {
     kicker: "PRODUCTS",
     title: "Quantum Products Portfolio",
     intro:
-      "A full product line spanning software, custom silicon, cryogenic hardware, and the power infrastructure to run it all on-site.",
+      "A full product line spanning software, custom silicon, cryogenic hardware, and the power infrastructure to run it all on-site — designed so a client can adopt one product or the entire stack without re-platforming later. Every product below is built to interoperate: the QML Suite runs on QPU Series hardware, which is controlled through the Cryogenic Control Systems, which are powered and housed inside the Quantum Data Center Platform.",
     sections: [
       {
         heading: "Portfolio",
@@ -64,23 +66,37 @@ export const PAGES: Record<string, ContentPage> = {
         items: [
           {
             title: "EDGEX QML Suite",
-            body: "Quantum-enhanced machine learning platform for predictive analytics, anomaly detection, and high-dimensional modeling.",
+            body: "Quantum-enhanced machine learning platform for predictive analytics, anomaly detection, and high-dimensional modeling. Ships as a hybrid pipeline: classical preprocessing and orchestration on standard infrastructure, with quantum kernels and variational circuits handling the parts of the workload where they outperform classical methods — pattern recognition in very high-dimensional or highly correlated data.",
           },
           {
             title: "EDGEX QPU Series",
-            body: "Custom-engineered Quantum Processing Units: Superconducting QPU-X, Photonic QPU-P, Trapped-Ion QPU-I, Spin-Qubit QPU-S, and the fault-tolerant Topological QPU-T.",
+            body: "Custom-engineered Quantum Processing Units across five architectures — Superconducting QPU-X, Photonic QPU-P, Trapped-Ion QPU-I, Spin-Qubit QPU-S, and the fault-tolerant Topological QPU-T — so the underlying hardware can be matched to the workload's coherence, connectivity, and scale requirements instead of forcing every client onto one modality.",
           },
           {
             title: "EDGEX Cryogenic Control Systems",
-            body: "Pulse-level control electronics, RF/microwave systems, and cryogenic infrastructure.",
+            body: "Pulse-level control electronics, RF/microwave systems, and cryogenic infrastructure that keep QPUs at operating temperature and drive gate operations with the timing precision quantum algorithms depend on. Sold standalone for clients integrating third-party QPUs, or bundled with the QPU Series.",
           },
           {
             title: "EDGEX Micro-Nuclear Reactor (MMR) Power Module",
-            body: "20–50 MW modular reactor powering quantum campuses.",
+            body: "A 20–50 MW modular reactor built specifically to power quantum campuses, decoupling mission-critical compute from grid instability. Removes the single largest constraint on scaling a quantum data center: continuous, zero-interruption power at the density cryogenic systems require.",
           },
           {
             title: "EDGEX Quantum Data Center Platform",
-            body: "Quantum-ready, nuclear-powered, high-density compute facilities.",
+            body: "The facility layer that ties everything together — quantum-ready power distribution, cryogenic plant, and high-density compute racks engineered as one integrated system rather than retrofit into a conventional data center.",
+          },
+        ],
+      },
+      {
+        heading: "How the portfolio fits together",
+        layout: "list",
+        items: [
+          {
+            title: "Start anywhere",
+            body: "Clients typically start with the QML Suite (software-only) or a QPU Series engagement, then expand into Cryogenic Control Systems and the Data Center Platform as workloads scale past what a shared cloud QPU allocation can support.",
+          },
+          {
+            title: "Own the full stack, or just a layer",
+            body: "Every product is available standalone. A client running third-party QPUs can still adopt EDGEX's Cryogenic Control Systems or MMR power module without buying into the full portfolio.",
           },
         ],
       },
@@ -90,19 +106,50 @@ export const PAGES: Record<string, ContentPage> = {
     key: "services",
     kicker: "SERVICES",
     title: "Enterprise Quantum Services",
-    intro: "From algorithm design through deployed, compliant infrastructure.",
+    intro:
+      "From algorithm design through deployed, compliant infrastructure — EDGEX's services exist to de-risk the gap between 'quantum computing could help here' and a workload actually running in production. Every engagement is scoped by Enterprise Solutions, staffed from the relevant division, and delivered against a signed statement of work.",
     sections: [
       {
         heading: "What we run for clients",
         layout: "cards",
         items: [
-          { title: "Quantum Machine Learning (QML)", body: "Hybrid quantum-classical pipelines using quantum kernels, variational circuits, and QNNs." },
-          { title: "Quantum Optimization", body: "QAOA-based optimization for finance, logistics, manufacturing, and energy." },
-          { title: "Quantum Simulation", body: "Molecular modeling, materials science, climate systems, and physics simulations." },
-          { title: "Quantum Security", body: "Quantum-resistant cryptography, QKD, and quantum threat detection." },
-          { title: "Quantum Cloud Integration", body: "Azure Quantum, AWS Braket, IBM Quantum, and hybrid HPC + QPU orchestration." },
-          { title: "QPU Custom Engineering", body: "Design, fabrication, testing, and deployment of custom quantum processors." },
-          { title: "Nuclear-Powered Data Center Deployment", body: "MMR integration, safety systems, compliance, and facility architecture." },
+          {
+            title: "Quantum Machine Learning (QML)",
+            body: "Hybrid quantum-classical pipelines using quantum kernels, variational circuits, and QNNs — built where classical ML plateaus on very high-dimensional or densely correlated data, such as multi-factor risk models or genomic pattern recognition.",
+          },
+          {
+            title: "Quantum Optimization",
+            body: "QAOA-based optimization for finance, logistics, manufacturing, and energy — applied to combinatorial problems (routing, scheduling, portfolio allocation) where the solution space grows too fast for classical solvers to search exhaustively.",
+          },
+          {
+            title: "Quantum Simulation",
+            body: "Molecular modeling, materials science, climate systems, and physics simulations — used where the system being modeled is itself quantum mechanical, so a quantum simulator represents it more directly than a classical approximation.",
+          },
+          {
+            title: "Quantum Security",
+            body: "Quantum-resistant cryptography, QKD, and quantum threat detection — built for organizations that need to start migrating before quantum computers capable of breaking current public-key cryptography exist, not after.",
+          },
+          {
+            title: "Quantum Cloud Integration",
+            body: "Azure Quantum, AWS Braket, IBM Quantum, and hybrid HPC + QPU orchestration — for clients who want quantum capability without owning QPU hardware, or who need to burst from an on-prem EDGEX QPU to cloud capacity during peak load.",
+          },
+          {
+            title: "QPU Custom Engineering",
+            body: "Design, fabrication, testing, and deployment of custom quantum processors — for clients whose workload characteristics justify hardware built to their exact coherence, connectivity, or form-factor requirements rather than an off-the-shelf QPU.",
+          },
+          {
+            title: "Nuclear-Powered Data Center Deployment",
+            body: "MMR integration, safety systems, compliance, and facility architecture — the full path from site assessment through a commissioned, NRC-compliant, quantum-ready campus.",
+          },
+        ],
+      },
+      {
+        heading: "How an engagement runs",
+        layout: "list",
+        items: [
+          { title: "1. Readiness assessment", body: "Enterprise Solutions evaluates whether the workload has a genuine quantum advantage before recommending a build." },
+          { title: "2. Proof of concept", body: "A scoped PoC validates the approach against real (or representative) client data before committing to production build-out." },
+          { title: "3. Production deployment", body: "The relevant division — Quantum Engineering, Quantum Software, or Advanced Energy Systems — delivers and hands off to Operations & Infrastructure." },
         ],
       },
     ],
@@ -111,23 +158,36 @@ export const PAGES: Record<string, ContentPage> = {
     key: "technologies",
     kicker: "TECHNOLOGIES",
     title: "Core Technology Stack",
-    intro: "The layers underneath every EDGEX engagement, from algorithm to reactor.",
+    intro:
+      "The layers underneath every EDGEX engagement, from algorithm to reactor. Each layer is chosen for a specific job in the stack — algorithmic techniques for extracting quantum advantage, cloud integrations for reaching third-party QPUs, and physical infrastructure for running owned hardware at scale.",
     sections: [
       {
-        heading: "Stack",
+        heading: "Algorithms & models",
         layout: "list",
         items: [
-          { title: "Quantum Kernels & SVMs", body: "" },
-          { title: "Variational Quantum Circuits (VQC)", body: "" },
-          { title: "Quantum Neural Networks (QNN)", body: "" },
-          { title: "Quantum Approximate Optimization Algorithms (QAOA)", body: "" },
-          { title: "Hybrid Quantum-Classical Transformers", body: "" },
-          { title: "Azure Quantum Integration", body: "" },
-          { title: "High-performance classical compute", body: "" },
-          { title: "Cryogenic systems (10–20 mK)", body: "" },
-          { title: "Micro-Nuclear Reactor Systems", body: "" },
-          { title: "Quantum-safe cryptography", body: "" },
-          { title: "Quantum cloud orchestration", body: "" },
+          { title: "Quantum Kernels & SVMs", body: "Classical support-vector methods with a quantum-computed kernel, used where the feature space is too high-dimensional for classical kernels to separate efficiently." },
+          { title: "Variational Quantum Circuits (VQC)", body: "Parameterized circuits trained with classical optimizers — the workhorse architecture behind most near-term QML and optimization work." },
+          { title: "Quantum Neural Networks (QNN)", body: "Circuit-based analogues to classical neural network layers, composed into hybrid quantum-classical models." },
+          { title: "Quantum Approximate Optimization Algorithms (QAOA)", body: "The core algorithm behind EDGEX's optimization service line, mapping combinatorial problems onto near-term hardware." },
+          { title: "Hybrid Quantum-Classical Transformers", body: "Transformer architectures with quantum-computed attention or embedding layers, used in select QML Suite deployments." },
+        ],
+      },
+      {
+        heading: "Cloud & integration",
+        layout: "list",
+        items: [
+          { title: "Azure Quantum Integration", body: "Direct orchestration against Azure Quantum's hardware partners for clients standardized on Microsoft's cloud." },
+          { title: "Quantum cloud orchestration", body: "A common orchestration layer across Azure Quantum, AWS Braket, and IBM Quantum, so workloads aren't locked to one cloud QPU provider." },
+          { title: "High-performance classical compute", body: "The classical HPC layer every hybrid workload runs alongside — pre/post-processing, orchestration, and the parts of a pipeline that don't benefit from quantum execution." },
+        ],
+      },
+      {
+        heading: "Hardware & infrastructure",
+        layout: "list",
+        items: [
+          { title: "Cryogenic systems (10–20 mK)", body: "The operating temperature range EDGEX's superconducting and spin-qubit QPUs require, maintained by dilution refrigeration." },
+          { title: "Micro-Nuclear Reactor Systems", body: "20–50 MW modular reactors purpose-built to power cryogenic HPC facilities without grid dependency." },
+          { title: "Quantum-safe cryptography", body: "Post-quantum cryptographic standards implemented across both client-facing security services and EDGEX's own infrastructure." },
         ],
       },
     ],
@@ -136,18 +196,37 @@ export const PAGES: Record<string, ContentPage> = {
     key: "industries",
     kicker: "INDUSTRIES",
     title: "Industry Solutions",
-    intro: "Domain-specific applications of the same underlying quantum stack.",
+    intro:
+      "Domain-specific applications of the same underlying quantum stack. EDGEX doesn't build separate technology per industry — the QML, optimization, simulation, and security service lines are applied to whichever combinatorial, high-dimensional, or cryptographic problem a given industry actually has.",
     sections: [
       {
         heading: "Where EDGEX operates",
         layout: "cards",
         items: [
-          { title: "Financial Services & Trading", body: "Risk analytics, pricing models, fraud detection, portfolio optimization." },
-          { title: "Healthcare & Life Sciences", body: "Diagnostics, drug discovery, genomic pattern recognition, medical imaging." },
-          { title: "Cybersecurity & Threat Intelligence", body: "Quantum-resistant encryption, anomaly detection, threat modeling." },
-          { title: "Manufacturing & Logistics", body: "Routing, scheduling, predictive maintenance, supply-chain forecasting." },
-          { title: "Energy & Climate Science", body: "Materials modeling, grid optimization, climate simulation." },
-          { title: "Government & Defense", body: "Secure communications, advanced simulation, strategic analytics." },
+          {
+            title: "Financial Services & Trading",
+            body: "Risk analytics, pricing models, fraud detection, and portfolio optimization — typically QAOA-based portfolio allocation and QML-based fraud pattern detection, where the combinatorial search space or feature dimensionality exceeds what classical solvers handle in the time a trading desk has.",
+          },
+          {
+            title: "Healthcare & Life Sciences",
+            body: "Diagnostics, drug discovery, genomic pattern recognition, and medical imaging — quantum simulation for molecular modeling in drug discovery, and QML for genomic and imaging pattern recognition at a resolution classical ML struggles to match.",
+          },
+          {
+            title: "Cybersecurity & Threat Intelligence",
+            body: "Quantum-resistant encryption, anomaly detection, and threat modeling — migrating cryptographic infrastructure ahead of quantum-capable adversaries, paired with QML-based anomaly detection across network telemetry.",
+          },
+          {
+            title: "Manufacturing & Logistics",
+            body: "Routing, scheduling, predictive maintenance, and supply-chain forecasting — QAOA-based routing and scheduling across multi-site operations, where the number of feasible configurations grows combinatorially with fleet or facility count.",
+          },
+          {
+            title: "Energy & Climate Science",
+            body: "Materials modeling, grid optimization, and climate simulation — quantum simulation of materials for next-generation energy storage, and optimization applied to grid load-balancing.",
+          },
+          {
+            title: "Government & Defense",
+            body: "Secure communications, advanced simulation, and strategic analytics — quantum-safe communications infrastructure and simulation-driven strategic modeling, delivered under the compliance framework in Corporate Governance.",
+          },
         ],
       },
     ],
@@ -156,19 +235,29 @@ export const PAGES: Record<string, ContentPage> = {
     key: "departments",
     kicker: "DEPARTMENTS",
     title: "Corporate Structure",
-    intro: "Seven divisions covering hardware, software, energy, and delivery.",
+    intro:
+      "Seven divisions covering hardware, software, energy, and delivery — structured so a client engagement flows through exactly the divisions its scope requires, from Enterprise Solutions' initial assessment through to Operations & Infrastructure's long-term facility support.",
     sections: [
       {
         heading: "Divisions",
         layout: "cards",
         items: [
-          { title: "Quantum Engineering Division", body: "QPU design, fabrication, cryogenic systems, quantum control electronics." },
-          { title: "Quantum Software Division", body: "QML, optimization, simulation, security, cloud integration." },
-          { title: "Advanced Energy Systems Division", body: "Micro-nuclear reactor engineering, safety systems, facility integration." },
-          { title: "Enterprise Solutions Division", body: "Architecture design, consulting, PoCs, deployment, compliance." },
-          { title: "Research & Innovation Lab", body: "Quantum algorithms, materials science, photonics, superconducting research." },
-          { title: "Operations & Infrastructure", body: "Data centers, HPC clusters, nuclear-powered quantum campuses." },
-          { title: "Corporate Administration", body: "Legal, finance, HR, compliance, governance." },
+          { title: "Quantum Engineering Division", body: "QPU design, fabrication, cryogenic systems, and quantum control electronics — owns everything in the QPU Series and Cryogenic Control Systems products." },
+          { title: "Quantum Software Division", body: "QML, optimization, simulation, security, and cloud integration — owns the QML Suite and every service line built on top of it." },
+          { title: "Advanced Energy Systems Division", body: "Micro-nuclear reactor engineering, safety systems, and facility integration — owns the MMR Power Module and its NRC-compliant deployment." },
+          { title: "Enterprise Solutions Division", body: "Architecture design, consulting, PoCs, deployment, and compliance — the client-facing division that scopes engagements and coordinates the others." },
+          { title: "Research & Innovation Lab", body: "Quantum algorithms, materials science, photonics, and superconducting research — the division that feeds new capability into the product portfolio." },
+          { title: "Operations & Infrastructure", body: "Data centers, HPC clusters, and nuclear-powered quantum campuses — owns long-term operation once Engineering and Energy Systems hand off a completed build." },
+          { title: "Corporate Administration", body: "Legal, finance, HR, compliance, and governance — see Corporate Governance for how this division oversees engagements involving export control and nuclear-adjacent work." },
+        ],
+      },
+      {
+        heading: "How an engagement moves through the divisions",
+        layout: "list",
+        items: [
+          { title: "Enterprise Solutions", body: "Scopes the engagement and determines which divisions it needs." },
+          { title: "Quantum Engineering / Quantum Software / Advanced Energy Systems", body: "Deliver the hardware, software, or power infrastructure the engagement requires." },
+          { title: "Operations & Infrastructure", body: "Takes over long-term operation once a build is commissioned." },
         ],
       },
     ],
@@ -177,7 +266,8 @@ export const PAGES: Record<string, ContentPage> = {
     key: "about",
     kicker: "ABOUT US",
     title: "ALGU Co. (DBA EDGEX)",
-    intro: "Mission: to engineer quantum systems that transform enterprise intelligence, accelerate computation, and power the next era of technological innovation.",
+    intro:
+      "Mission: to engineer quantum systems that transform enterprise intelligence, accelerate computation, and power the next era of technological innovation. ALGU Co. operates under the EDGEX trade name across every product and service line described on this site.",
     sections: [
       {
         heading: "Corporate identity",
@@ -192,6 +282,15 @@ export const PAGES: Record<string, ContentPage> = {
           { title: "Registered Address", body: "2321 Dundeen St., Charlotte, NC 28216, United States" },
           { title: "Registered Agent", body: "Guiffo, Alex — 2321 Dundeen St., Charlotte, NC 28216, United States" },
           { title: "Directors / Officers", body: "4 officers on file" },
+        ],
+      },
+      {
+        heading: "What sets EDGEX apart",
+        layout: "list",
+        items: [
+          { title: "Full-stack ownership", body: "Software, custom silicon, cryogenics, and power infrastructure engineered as one system rather than assembled from unrelated vendors." },
+          { title: "Power independence", body: "The MMR Power Module removes grid dependency as a scaling constraint — a problem most quantum computing providers don't own the solution to." },
+          { title: "Engagement-scoped delivery", body: "Every service is delivered against a signed statement of work through Enterprise Solutions, not sold as generic self-serve access." },
         ],
       },
       {
@@ -210,7 +309,8 @@ export const PAGES: Record<string, ContentPage> = {
     key: "contact",
     kicker: "CONTACT US",
     title: "Corporate Contact",
-    intro: "edgex@algu.net · 2321 Dundeen St., Charlotte, NC 28216, USA",
+    intro:
+      "edgex@algu.net · 2321 Dundeen St., Charlotte, NC 28216, USA — for engagement inquiries, contact Enterprise Solutions directly; for press, see Newsroom; for technical support on an active engagement, use the contact provided in your statement of work.",
     sections: [],
   },
   leadership: {

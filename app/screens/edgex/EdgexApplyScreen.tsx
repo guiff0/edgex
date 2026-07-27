@@ -5,9 +5,10 @@ import { View } from "react-native"
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
 import { EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
+import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
-import { submitApplication } from "@/services/sync/applicationsSync"
+import { submitApplication } from "@/services/watermelon/applicationsSync"
 import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
 
@@ -89,6 +90,7 @@ export const EdgexApplyScreen: FC<EdgexApplyScreenProps> = function EdgexApplySc
   return (
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+        <EdgexIllustration variant="careers" height={130} style={{ marginBottom: spacing.lg }} />
         <Text
           text="APPLY"
           style={{

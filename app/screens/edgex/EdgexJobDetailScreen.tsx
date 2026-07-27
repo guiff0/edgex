@@ -3,10 +3,11 @@ import { ActivityIndicator, View } from "react-native"
 
 import { Text } from "@/components/Text"
 import { EdgexChip, EdgexListRow, EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
+import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
 import type { Job } from "@/content/edgexJobs"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
-import { getJob } from "@/services/sync/jobsSync"
+import { getJob } from "@/services/watermelon/jobsSync"
 import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
 
@@ -34,6 +35,7 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
   return (
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+        <EdgexIllustration variant="careers" height={140} style={{ marginBottom: spacing.lg }} />
         {job === null ? (
           <ActivityIndicator color={edgex.signal} />
         ) : job === undefined ? (

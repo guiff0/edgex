@@ -1,69 +1,117 @@
 # EDGEX site — setup
 
-This adds the full ALGU Co. / EDGEX site to your existing Ignite app, now at
-`/` (the app's home). Quantom Inc. still exists in the codebase but no longer
-owns the landing page — it moved to `/quantom`. If you'd rather remove
-Quantom entirely instead of just relocating it, say so and I'll strip it out
-(delete `QuantomScreen.tsx`/`ReactorCore.tsx` and their route registrations).
-EDGEX never references Quantom's components or branding either way.
+This adds the full ALGU Co. / EDGEX site to your existing Ignite app, at `/`
+(the app's home). Quantom Inc. still exists in the codebase but no longer
+owns the landing page — it moved to `/quantom`.
 
-Offline sync is **Supabase-only** — no PowerSync. A small local SQLite outbox
-+ polling sync script handles it (see "Offline sync" below).
+Offline data is now **WatermelonDB** (not SQLite/expo-sqlite, not PowerSync),
+synced against Supabase with a simple manual pull/push loop.
 
 ## 1. Install dependencies
 
-Unzip this at your project root (`D:\dev\expo\ignite`), letting it merge into
-your existing `app/` folder and `package.json`.
-
-Then:
+Unzip this at your project root, letting it merge into your existing `app/`
+folder, `package.json`, and `assets/`.
 
 ```bash
 npm install
-npx expo install expo-document-picker expo-sqlite @react-native-async-storage/async-storage
+npx expo install expo-document-picker @react-native-async-storage/async-storage expo-linear-gradient
 ```
 
-The second command resolves those three Expo-managed packages to versions
-that match your Expo SDK (55) — they're intentionally left unpinned in
-`package.json` for that reason.
+That resolves the Expo-managed packages to versions matching your Expo SDK
+(55) — they're intentionally left unpinned in `package.json` for that reason.
 
-## 2. Supabase
+## 2. WatermelonDB requires two config changes I couldn't make blind
+
+I don't have your `babel.config.js` or `tsconfig.json` — only the `app/`
+folder was uploaded, not project-root config files — so these need a manual
+one-line addition each rather than a full-file overwrite that might clobber
+something else in them.
+
+**`babel.config.js`** — add the decorators plugin *before* any other plugins
+(WatermelonDB's models use `@field`/`@text` decorators):
+```js
+plugins: [
+  ["@babel/plugin-proposal-decorators", { legacy: true }],
+  // ...your existing plugins
+],
+```
+
+**`tsconfig.json`** — add under `compilerOptions`:
+```json
+"experimentalDecorators": true
+```
+
+No `app.config.ts` / Expo config plugin changes needed — WatermelonDB's
+SQLite adapter auto-links like any other native module under a custom dev
+client, and this project already depends on `expo-dev-client`. You will need
+to rebuild the dev client once (`npx expo run:ios` / `run:android`, or a new
+EAS dev build) since this is a native module — it won't work in Expo Go.
+
+## 3. Supabase
 
 1. Create a project at supabase.com if you don't have one yet.
 2. Run `sql/edgex_schema.sql` in the Supabase SQL editor — creates `jobs`,
    `applications`, RLS policies, and the private `resumes` storage bucket.
-3. Copy `.env.example` to `.env` and fill in:
-   - `EXPO_PUBLIC_SUPABASE_URL`
-   - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-   (Both from Project Settings → API.)
+3. Copy `.env.example` to `.env` and fill in `EXPO_PUBLIC_SUPABASE_URL` and
+   `EXPO_PUBLIC_SUPABASE_ANON_KEY` (Project Settings → API).
 4. Optionally seed a couple of rows into `jobs` — Careers falls back to the
-   bundled seed list in `app/content/edgexJobs.ts` until real rows exist, so
-   the site works either way.
+   bundled seed list in `app/content/edgexJobs.ts` until real rows exist.
 
-Login and Sign-up (`/edgex/login`, `/edgex/signup`) work against real
-Supabase Auth as soon as step 3 is done — no code changes needed.
+## 4. How the offline sync works (WatermelonDB layer)
 
-## 3. Offline sync (how it works, no extra setup)
+- **`app/services/watermelon/schema.ts`** — table schema for `jobs` and
+  `applications`.
+- **`app/services/watermelon/models/`** — `JobModel` and `ApplicationModel`,
+  the WatermelonDB `Model` subclasses.
+- **`app/services/watermelon/database.ts`** — the `Database` instance. Uses
+  the SQLite adapter (JSI) on native and the LokiJS adapter on web, since
+  this project also runs via `expo start --web` and WatermelonDB's SQLite
+  adapter is native-only.
+- **`jobsSync.ts`** — `pullJobs()` upserts Supabase's `jobs` rows into the
+  local collection; `getJobs()`/`getJob()` always read locally first, falling
+  back to seed data if the collection is empty.
+- **`applicationsSync.ts`** — `submitApplication()` creates a local record
+  immediately (instant, offline-safe), then attempts an immediate push;
+  `pushPendingApplications()` retries anything not yet synced.
+- **`syncEngine.ts`** — `startBackgroundSync()` runs both on startup, every
+  60s, and on app-foreground. This is a simple manual pull/push loop, *not*
+  WatermelonDB's built-in `synchronize()` protocol — that protocol needs a
+  backend implementing WatermelonDB's specific pull/push RPC contract, which
+  is more infrastructure than this data model (two tables, no complex
+  conflict resolution) needs. Worth revisiting if the schema grows.
 
-There's no separate service to provision — this runs entirely on your
-existing Supabase project:
+## 5. Visual direction: metallic silver + blue reactor-core
 
-- **Jobs (pull):** `app/services/sync/jobsSync.ts` → `pullJobs()` fetches
-  active jobs from Supabase into a local SQLite cache. `getJobs()` /
-  `getJob()` always read from that local cache first, falling back to the
-  bundled seed list if the cache is empty — so Careers works instantly,
-  offline, before Supabase has any rows.
-- **Applications (push):** `app/services/sync/applicationsSync.ts` →
-  `submitApplication()` writes to a local SQLite outbox table immediately
-  (instant, fully offline-safe), then makes a best-effort push to Supabase
-  right away. If that fails (no connectivity), the row stays
-  `sync_status = 'pending'`.
-- **The loop:** `app/services/sync/syncEngine.ts` → `startBackgroundSync()`
-  runs both of the above once at startup, then every 60s, and again whenever
-  the app returns to the foreground. Started once in `app/app.tsx`.
+- **`app/theme/edgexPalette.ts`** — brushed-steel surfaces with a bright
+  reactor-glow blue (`signal`) as the dominant accent, plus a deep secondary
+  blue (`teal`, renamed in value only — kept the key name so nothing
+  downstream needed touching) and a muted metallic gold (`amber`) reserved
+  for warnings, not branding.
+- **`app/components/edgex/EdgexIllustration.tsx`** — a procedural
+  illustration on every single page (including the landing page): a
+  brushed-metal gradient panel (via `expo-linear-gradient`) with a pulsing
+  reactor-core glow and a page-specific glyph. **I don't have an
+  image-generation tool in this environment**, so these are built the same
+  way as the earlier `ReactorCore`/`EdgexLogo` pieces — hand-drawn from
+  Views and gradients rather than generated photographs/artwork. If you want
+  the *illustrated* logo artwork itself used more broadly (it's currently
+  shown large on Home/Login/Sign-up via `EdgexLogoImage.tsx`, and small via
+  the vector `EdgexLogo.tsx` mark in nav chrome), let me know and I can swap
+  more of these procedural panels for that artwork directly.
+- **`EdgexLogoImage.tsx`** — wraps your uploaded logo artwork
+  (`assets/images/edgex-logo.png`) for prominent hero placement.
+- **`EdgexPressableScale.tsx`** — small press-to-scale feedback wrapper,
+  used on Home's stat cards and nav links so the landing page has some
+  tactile response rather than being fully static.
 
-Nothing here needs configuring beyond the `.env` values from step 2 — it's a
-no-op (skips silently) until those are set, so the app is fully usable on
-local SQLite + the seed job list the whole time.
+## 6. Content
+
+Every page's copy was expanded — Products, Services, Technologies,
+Industries, Departments, and About now include a "why this matters" layer
+(how the products interlock, how an engagement actually moves through the
+divisions, why a given industry's problem maps to a given service line) on
+top of the original catalog listing, not just longer versions of the same
+bullet points.
 
 ## What's where
 
@@ -71,14 +119,16 @@ local SQLite + the seed job list the whole time.
 app/
   content/edgexContent.ts       nav, footer, and all static page content
   content/edgexJobs.ts          seed job vacancies (fallback data)
-  theme/edgexPalette.ts         EDGEX brand colors
-  components/edgex/            header, drawer menu, footer, shared primitives
+  theme/edgexPalette.ts         metallic silver + blue reactor-core palette
+  components/edgex/            header, drawer, footer, illustration, logo, shared primitives
   screens/edgex/                every EDGEX screen
   navigators/EdgexNavigator.tsx nested stack, registered as "Edgex" in AppNavigator
   services/supabase/            Supabase client + auth hook
-  services/sync/                local SQLite db, jobs pull, applications push, sync loop
+  services/watermelon/          schema, models, database, jobs/applications sync, sync loop
 sql/
   edgex_schema.sql              run this in the Supabase SQL editor
+assets/
+  images/edgex-logo.png         your uploaded logo artwork
 ```
 
 ## Routes
@@ -98,19 +148,5 @@ sql/
 | `/careers/:jobId/apply` | Apply |
 | `/login` | Sign in |
 | `/signup` | Create account |
+| `/leadership`, `/legal`, `/governance`, `/documentation`, `/api-access`, `/whitepapers`, `/case-studies`, `/newsroom` | Footer-linked pages |
 | `/quantom` | Quantom Inc. (moved off the root) |
-
-## Changes in this revision
-
-- Removed PowerSync entirely — replaced with the Supabase-only sync described
-  above (fewer moving parts, no separate instance/token endpoint to provision).
-- Added the site footer render — `FOOTER` content existed in `edgexContent.ts`
-  from the start but wasn't actually being rendered anywhere; it's now shown
-  via `EdgexFooter.tsx` at the bottom of every page.
-- Added `EdgexLogo.tsx` — a real logo mark (nested-diamond emblem + wordmark),
-  built from plain Views so it needs no SVG library, used in the header,
-  drawer menu, and footer. Not just "EDGEX" as plain text anymore.
-- EDGEX now owns the root path (`/`) and is the app's `initialRouteName`;
-  Quantom Inc. moved to `/quantom` instead of owning the landing page.
-- Added `Status: Current Active` and `Directors / Officers: 4 officers on
-  file` to the About page and footer legal column, from the registry lookup.

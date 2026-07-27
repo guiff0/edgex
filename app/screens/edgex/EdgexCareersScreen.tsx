@@ -1,0 +1,91 @@
+import { FC, useEffect, useState } from "react"
+import { ActivityIndicator, Pressable, View } from "react-native"
+
+import { Text } from "@/components/Text"
+import { EdgexChip } from "@/components/edgex/EdgexPrimitives"
+import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
+import type { Job } from "@/content/edgexJobs"
+import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
+import { getJobs } from "@/services/sync/jobsSync"
+import { useAppTheme } from "@/theme/context"
+import { edgex } from "@/theme/edgexPalette"
+
+interface EdgexCareersScreenProps extends EdgexStackScreenProps<"EdgexCareers"> {}
+
+export const EdgexCareersScreen: FC<EdgexCareersScreenProps> = function EdgexCareersScreen({
+  route,
+  navigation,
+}) {
+  const { theme } = useAppTheme()
+  const { spacing, typography } = theme
+  const [jobs, setJobs] = useState<Job[] | null>(null)
+
+  useEffect(() => {
+    let mounted = true
+    getJobs().then((result) => {
+      if (mounted) setJobs(result)
+    })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  return (
+    <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
+      <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
+        <Text
+          text="CAREERS"
+          style={{
+            fontFamily: typography.primary.medium,
+            color: edgex.signal,
+            fontSize: 12,
+            letterSpacing: 2,
+            marginBottom: spacing.sm,
+          }}
+        />
+        <Text
+          text="Open roles"
+          style={{ fontFamily: typography.primary.bold, color: edgex.text, fontSize: 32, marginBottom: spacing.md }}
+        />
+        <Text
+          text="Every division is hiring — quantum engineering, software, advanced energy systems, and enterprise delivery."
+          style={{ color: edgex.textDim, fontSize: 15, lineHeight: 22, marginBottom: spacing.lg }}
+        />
+      </View>
+
+      <View style={{ paddingHorizontal: spacing.lg, gap: spacing.sm }}>
+        {jobs === null ? (
+          <ActivityIndicator color={edgex.signal} style={{ marginTop: spacing.lg }} />
+        ) : jobs.length === 0 ? (
+          <Text text="No open roles right now — check back soon." style={{ color: edgex.textDim }} />
+        ) : (
+          jobs.map((job) => (
+            <Pressable
+              key={job.id}
+              onPress={() => navigation.navigate("EdgexJobDetail", { jobId: job.id })}
+              style={{
+                backgroundColor: edgex.surface,
+                borderWidth: 1,
+                borderColor: edgex.hairline,
+                borderRadius: 10,
+                padding: spacing.md,
+              }}
+            >
+              <Text
+                text={job.title}
+                style={{ fontFamily: typography.primary.medium, color: edgex.text, fontSize: 17, marginBottom: 4 }}
+              />
+              <Text text={job.department} style={{ color: edgex.textDim, fontSize: 13, marginBottom: spacing.sm }} />
+              <View style={{ flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" }}>
+                <EdgexChip label={job.location} fontFamily={typography.primary.medium} outline />
+                <EdgexChip label={job.employment_type} fontFamily={typography.primary.medium} outline />
+              </View>
+            </Pressable>
+          ))
+        )}
+      </View>
+
+      <View style={{ height: spacing.xxl }} />
+    </EdgexScreenShell>
+  )
+}

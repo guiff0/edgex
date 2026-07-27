@@ -28,6 +28,7 @@ import { AuthProvider } from "./context/AuthContext"
 import { initI18n } from "./i18n"
 import { AppNavigator } from "./navigators/AppNavigator"
 import { useNavigationPersistence } from "./navigators/navigationUtilities"
+import { startBackgroundSync } from "./services/sync/syncEngine"
 import { ThemeProvider } from "./theme/context"
 import { customFontsToLoad } from "./theme/typography"
 import { loadDateFnsLocale } from "./utils/formatDate"
@@ -39,10 +40,37 @@ export const NAVIGATION_PERSISTENCE_KEY = "NAVIGATION_STATE"
 const prefix = Linking.createURL("/")
 const config = {
   screens: {
-    Login: {
-      path: "",
-    },
+    Login: "login",
     Welcome: "welcome",
+    Quantom: {
+      path: "quantom",
+    },
+    Edgex: {
+      path: "",
+      screens: {
+        EdgexHome: "",
+        EdgexProducts: "products",
+        EdgexServices: "services",
+        EdgexTechnologies: "technologies",
+        EdgexIndustries: "industries",
+        EdgexDepartments: "departments",
+        EdgexAbout: "about",
+        EdgexContact: "contact",
+        EdgexCareers: "careers",
+        EdgexJobDetail: "careers/:jobId",
+        EdgexApply: "careers/:jobId/apply",
+        EdgexLogin: "login",
+        EdgexSignUp: "signup",
+        EdgexLeadership: "leadership",
+        EdgexLegal: "legal",
+        EdgexGovernance: "governance",
+        EdgexDocumentation: "documentation",
+        EdgexApiAccess: "api-access",
+        EdgexWhitepapers: "whitepapers",
+        EdgexCaseStudies: "case-studies",
+        EdgexNewsroom: "newsroom",
+      },
+    },
     Demo: {
       screens: {
         DemoShowroom: {
@@ -75,6 +103,13 @@ export function App() {
     initI18n()
       .then(() => setIsI18nInitialized(true))
       .then(() => loadDateFnsLocale())
+  }, [])
+
+  useEffect(() => {
+    // Runs immediately, then on an interval and app-foreground — safe no-op
+    // until EXPO_PUBLIC_SUPABASE_URL / _ANON_KEY are set.
+    const stop = startBackgroundSync()
+    return stop
   }, [])
 
   // Before we show the app, we have to wait for our state to be ready.

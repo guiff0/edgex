@@ -35,6 +35,7 @@
   },
   "plugins": [
     "expo-localization",
+     "expo-sqlite",
     "expo-font",
     [
       "expo-splash-screen",

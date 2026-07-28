@@ -4,11 +4,13 @@ import { View } from "react-native"
 
 import { Text } from "@/components/Text"
 import { TextField } from "@/components/TextField"
+import { EdgexAuthGate } from "@/components/edgex/EdgexAuthGate"
 import { EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
 import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
 import { submitApplication } from "@/services/watermelon/applicationsSync"
+import { useSupabaseAuth } from "@/services/supabase/useSupabaseAuth"
 import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
 
@@ -20,9 +22,10 @@ export const EdgexApplyScreen: FC<EdgexApplyScreenProps> = function EdgexApplySc
   const { theme } = useAppTheme()
   const { spacing, typography } = theme
   const { jobId } = route.params
+  const { session } = useSupabaseAuth()
 
   const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState(session?.user?.email ?? "")
   const [phone, setPhone] = useState("")
   const [coverNote, setCoverNote] = useState("")
   const [resume, setResume] = useState<DocumentPicker.DocumentPickerAsset | null>(null)
@@ -91,6 +94,14 @@ export const EdgexApplyScreen: FC<EdgexApplyScreenProps> = function EdgexApplySc
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
         <EdgexIllustration variant="careers" height={130} style={{ marginBottom: spacing.lg }} />
+      </View>
+
+      <EdgexAuthGate
+        onNavigateToSignUp={() => navigation.navigate("EdgexSignUp")}
+        title="Sign in to apply"
+        subtitle="Applications are tied to your account so we can follow up and so you can track status later."
+      >
+      <View style={{ paddingHorizontal: spacing.lg }}>
         <Text
           text="APPLY"
           style={{
@@ -180,6 +191,7 @@ export const EdgexApplyScreen: FC<EdgexApplyScreenProps> = function EdgexApplySc
           disabled={state === "submitting"}
         />
       </View>
+      </EdgexAuthGate>
 
       <View style={{ height: spacing.xxl }} />
     </EdgexScreenShell>

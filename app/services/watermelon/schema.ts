@@ -32,7 +32,7 @@ export const edgexSchema = appSchema({
         { name: "resume_path", type: "string", isOptional: true },
         { name: "upload_status", type: "string" },
         { name: "sync_status", type: "string", isIndexed: true }, // "pending" | "synced" | "failed"
-        { name: "created_at", type: "string" },
+        { name: "submitted_at", type: "string" },
       ],
     }),
   ],

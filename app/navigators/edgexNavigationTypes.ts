@@ -22,6 +22,7 @@ export type EdgexStackParamList = {
   EdgexWhitepapers: { pageKey: "whitepapers" }
   EdgexCaseStudies: { pageKey: "case-studies" }
   EdgexNewsroom: { pageKey: "newsroom" }
+  EdgexLearn: { pageKey: "learn" }
 }
 
 export type EdgexStackScreenProps<T extends keyof EdgexStackParamList> = NativeStackScreenProps<

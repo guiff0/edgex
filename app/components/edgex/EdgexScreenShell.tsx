@@ -1,4 +1,5 @@
 import { ReactNode, useState } from "react"
+import { Platform, View, ViewStyle } from "react-native"
 import { Drawer } from "react-native-drawer-layout"
 
 import { Screen } from "@/components/Screen"
@@ -14,6 +15,15 @@ export interface EdgexScreenShellProps {
   children: ReactNode
   contentContainerStyle?: object
 }
+
+// Sticky header for web (a standard corporate-site pattern). Native
+// ScrollView doesn't support CSS position:"sticky" the way react-native-web
+// does, so this only applies on web — native keeps the ordinary
+// scrolls-away-with-content header, which is the expected mobile pattern.
+const stickyHeaderWrapperStyle: ViewStyle =
+  Platform.OS === "web"
+    ? ({ position: "sticky" as never, top: 0, zIndex: 20, backgroundColor: edgex.ink } as ViewStyle)
+    : {}
 
 export function EdgexScreenShell({
   currentRoute,
@@ -41,7 +51,9 @@ export function EdgexScreenShell({
         contentContainerStyle={contentContainerStyle}
         safeAreaEdges={["top"]}
       >
-        <EdgexHeader onMenuPress={() => setOpen(true)} onNavigate={onNavigate} currentRoute={currentRoute} />
+        <View style={stickyHeaderWrapperStyle}>
+          <EdgexHeader onMenuPress={() => setOpen(true)} onNavigate={onNavigate} currentRoute={currentRoute} />
+        </View>
         {children}
         <EdgexFooter onNavigate={onNavigate} />
       </Screen>

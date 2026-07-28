@@ -31,6 +31,7 @@ const PAGE_KEY_TO_ILLUSTRATION: Record<string, EdgexIllustrationVariant> = {
   whitepapers: "whitepapers",
   "case-studies": "caseStudies",
   newsroom: "newsroom",
+  learn: "scientist",
 }
 
 interface EdgexContentScreenProps extends EdgexStackScreenProps<
@@ -49,6 +50,7 @@ interface EdgexContentScreenProps extends EdgexStackScreenProps<
   | "EdgexWhitepapers"
   | "EdgexCaseStudies"
   | "EdgexNewsroom"
+  | "EdgexLearn"
 > {}
 
 export const EdgexContentScreen: FC<EdgexContentScreenProps> = function EdgexContentScreen({

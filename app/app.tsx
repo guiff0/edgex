@@ -69,6 +69,7 @@ const config = {
         EdgexWhitepapers: "whitepapers",
         EdgexCaseStudies: "case-studies",
         EdgexNewsroom: "newsroom",
+        EdgexLearn: "learn",
       },
     },
     Demo: {

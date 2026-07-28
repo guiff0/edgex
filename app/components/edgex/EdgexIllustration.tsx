@@ -22,6 +22,7 @@ export type EdgexIllustrationVariant =
   | "whitepapers"
   | "caseStudies"
   | "newsroom"
+  | "scientist"
 
 const GLYPHS: Record<EdgexIllustrationVariant, { shape: Shape; color: string }> = {
   home: { shape: "diamond", color: edgex.signal },
@@ -33,7 +34,7 @@ const GLYPHS: Record<EdgexIllustrationVariant, { shape: Shape; color: string }> 
   about: { shape: "diamond", color: edgex.silverBright },
   careers: { shape: "triangle", color: edgex.signal },
   contact: { shape: "dot", color: edgex.signal },
-  leadership: { shape: "diamond", color: edgex.silverBright },
+  leadership: { shape: "bust", color: edgex.silverBright },
   legal: { shape: "square", color: edgex.steel },
   governance: { shape: "ring", color: edgex.signal },
   documentation: { shape: "bars", color: edgex.signal },
@@ -41,9 +42,10 @@ const GLYPHS: Record<EdgexIllustrationVariant, { shape: Shape; color: string }> 
   whitepapers: { shape: "square", color: edgex.signal },
   caseStudies: { shape: "circles", color: edgex.teal },
   newsroom: { shape: "dot", color: edgex.teal },
+  scientist: { shape: "bust", color: edgex.signal },
 }
 
-type Shape = "diamond" | "square" | "circles" | "ring" | "bars" | "triangle" | "cross" | "dot"
+type Shape = "diamond" | "square" | "circles" | "ring" | "bars" | "triangle" | "cross" | "dot" | "bust"
 
 export interface EdgexIllustrationProps {
   variant: EdgexIllustrationVariant
@@ -182,5 +184,28 @@ function Glyph({ shape, color, size }: { shape: Shape; color: string; size: numb
       )
     case "dot":
       return <View style={{ width: size * 0.5, height: size * 0.5, borderRadius: size * 0.25, backgroundColor: color }} />
+    case "bust":
+      return (
+        <View style={{ alignItems: "center" }}>
+          <View
+            style={{
+              width: size * 0.44,
+              height: size * 0.44,
+              borderRadius: size * 0.22,
+              backgroundColor: color,
+              marginBottom: size * 0.06,
+            }}
+          />
+          <View
+            style={{
+              width: size * 0.8,
+              height: size * 0.42,
+              borderTopLeftRadius: size * 0.4,
+              borderTopRightRadius: size * 0.4,
+              backgroundColor: color,
+            }}
+          />
+        </View>
+      )
   }
 }

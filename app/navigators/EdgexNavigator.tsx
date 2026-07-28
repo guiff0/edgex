@@ -64,6 +64,7 @@ export function EdgexNavigator() {
         initialParams={{ pageKey: "case-studies" }}
       />
       <Stack.Screen name="EdgexNewsroom" component={EdgexContentScreen} initialParams={{ pageKey: "newsroom" }} />
+      <Stack.Screen name="EdgexLearn" component={EdgexContentScreen} initialParams={{ pageKey: "learn" }} />
     </Stack.Navigator>
   )
 }

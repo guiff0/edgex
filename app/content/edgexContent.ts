@@ -16,6 +16,7 @@ export const TOP_NAV = [
   { label: "Home", route: "EdgexHome" as const },
   { label: "Products", route: "EdgexProducts" as const },
   { label: "Services", route: "EdgexServices" as const },
+  { label: "Learn", route: "EdgexLearn" as const },
   { label: "Technologies", route: "EdgexTechnologies" as const },
   { label: "Industries", route: "EdgexIndustries" as const },
   { label: "Departments", route: "EdgexDepartments" as const },
@@ -51,6 +52,23 @@ export const HOME_CONTENT = {
     { title: "6", label: "Industries Served" },
   ],
 }
+
+export const WHY_US = [
+  { title: "Full-stack ownership", body: "Software, custom silicon, cryogenics, and power infrastructure engineered as one system, not assembled from unrelated vendors." },
+  { title: "Power independence", body: "The MMR Power Module removes grid dependency as a scaling constraint — a problem most quantum providers don't own the solution to." },
+  { title: "Five QPU architectures", body: "Superconducting, photonic, trapped-ion, spin, and topological — hardware matched to the workload, not the other way around." },
+  { title: "Engagement-scoped delivery", body: "Every service runs against a signed statement of work through Enterprise Solutions, not generic self-serve access." },
+  { title: "Quantum-safe by default", body: "Quantum-resistant cryptography applied across client engagements and EDGEX's own infrastructure alike." },
+  { title: "Seven specialized divisions", body: "From algorithm research to nuclear-powered facility operations — the right team owns each part of an engagement." },
+]
+
+export const TRUST_SIGNALS = [
+  { title: "Registered entity", body: "ALGU Co., Company Number 1617133 — Business Corporation, North Carolina, Status: Current Active." },
+  { title: "NRC-compliant partners", body: "MMR reactor cores, shielding, and safety systems delivered through NRC-compliant nuclear engineering partners." },
+  { title: "Governance oversight", body: "Export-control and data-handling compliance review on every client engagement — see Corporate Governance." },
+  { title: "Quantum-safe security", body: "Quantum-resistant cryptography and access controls applied to client data and internal systems." },
+]
+
 
 export const PAGES: Record<string, ContentPage> = {
   products: {
@@ -484,7 +502,44 @@ export const PAGES: Record<string, ContentPage> = {
       "Company announcements and press coverage will be posted here as they're published. Media inquiries: edgex@algu.net.",
     sections: [],
   },
+  learn: {
+    key: "learn",
+    kicker: "LEARN",
+    title: "Quantum ML & Research",
+    intro:
+      "A working map of the quantum machine learning techniques EDGEX applies in client engagements — from foundational tutorials through the finance-specific models our Quantum Engagement research group builds on most often.",
+    sections: [
+      {
+        heading: "Applied Quantum ML",
+        layout: "cards",
+        items: [
+          { title: "Quantum ML for Anomaly Detection", body: "Quantum kernel methods applied to flagging outliers in network telemetry, transaction streams, and sensor data at a resolution classical models miss." },
+          { title: "Quantum Optimization", body: "QAOA-based approaches to combinatorial problems — routing, scheduling, allocation — where the feasible-solution space grows too fast for classical solvers." },
+          { title: "Practical QML Tutorials", body: "Hands-on walkthroughs for engineering teams onboarding onto EDGEX's QML Suite, from first circuit to a deployed hybrid pipeline." },
+          { title: "Finance-Oriented Quantum ML Examples", body: "Worked examples applying QML to pricing, fraud detection, and portfolio problems — the same techniques used in EDGEX's Financial Services engagements." },
+          { title: "Quantum ML for Complex Systems", body: "Modeling systems with many interacting variables — supply chains, grids, biological networks — where classical simulation struggles to scale." },
+        ],
+      },
+      {
+        heading: "Quantum Finance & Risk",
+        layout: "cards",
+        items: [
+          { title: "Quantum Bayesian Networks", body: "Quantum-enhanced probabilistic graphical models for dependency-heavy risk and causal inference problems." },
+          { title: "Quantum Algorithms for Derivatives Pricing", body: "Quantum amplitude estimation and related techniques applied to pricing path-dependent and multi-asset derivatives." },
+          { title: "Quantum ML for Time-Series Forecasting", body: "Hybrid quantum-classical models for forecasting problems with long-range dependencies classical time-series models undersample." },
+          { title: "Quantum Portfolio Optimization", body: "QAOA-based portfolio allocation under real-world constraints — transaction costs, sector limits, turnover — not just the unconstrained textbook case." },
+          { title: "Quantum Monte Carlo", body: "Quantum-accelerated Monte Carlo methods for risk simulation, offering quadratic speedups over classical sampling in select problem classes." },
+          { title: "Quantum Risk Modeling", body: "Applying the above techniques together for enterprise risk models — VaR, stress testing, and scenario analysis at higher fidelity." },
+          { title: "Quantum-Enhanced Reinforcement Learning", body: "Reinforcement learning with quantum-computed value functions or policies, explored for dynamic trading and control problems." },
+        ],
+      },
+    ],
+  },
 }
+
+export const LEARN_MENU_ITEMS: string[] = PAGES.learn.sections.flatMap((section) =>
+  section.items.map((item) => item.title),
+)
 
 export const FOOTER = {
   columns: [

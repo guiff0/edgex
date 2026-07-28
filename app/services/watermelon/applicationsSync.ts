@@ -38,8 +38,7 @@ export async function submitApplication(input: ApplicationInput): Promise<{ id: 
       application.resumePath = ""
       application.uploadStatus = "pending"
       application.syncStatus = "pending"
-      application.createdAt = Date.now()
-
+      application.submittedAt = new Date().toISOString()
     })
     recordId = record.id
   })
@@ -74,7 +73,7 @@ export async function pushPendingApplications(): Promise<void> {
         cover_note: record.coverNote,
         resume_path: resumePath,
         upload_status: uploadStatus,
-        created_at: record.createdAt,
+        created_at: record.submittedAt,
       })
       if (error) throw error
 

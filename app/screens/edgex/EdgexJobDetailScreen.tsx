@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react"
 import { ActivityIndicator, View } from "react-native"
 
 import { Text } from "@/components/Text"
+import { EdgexAuthGate } from "@/components/edgex/EdgexAuthGate"
 import { EdgexChip, EdgexListRow, EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
 import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
@@ -36,7 +37,15 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
         <EdgexIllustration variant="careers" height={140} style={{ marginBottom: spacing.lg }} />
-        {job === null ? (
+      </View>
+
+      <EdgexAuthGate
+        onNavigateToSignUp={() => navigation.navigate("EdgexSignUp")}
+        title="Sign in to view this role"
+        subtitle="Full role details and the application form are available once you're signed in."
+      >
+        <View style={{ paddingHorizontal: spacing.lg }}>
+          {job === null ? (
           <ActivityIndicator color={edgex.signal} />
         ) : job === undefined ? (
           <Text text="This role isn't available anymore." style={{ color: edgex.textDim }} />
@@ -92,8 +101,9 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
               />
             </View>
           </>
-        )}
-      </View>
+          )}
+        </View>
+      </EdgexAuthGate>
 
       <View style={{ height: spacing.xxl }} />
     </EdgexScreenShell>

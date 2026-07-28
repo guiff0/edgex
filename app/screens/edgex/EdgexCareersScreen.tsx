@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from "react"
 import { ActivityIndicator, Pressable, View } from "react-native"
 
 import { Text } from "@/components/Text"
+import { EdgexAuthGate } from "@/components/edgex/EdgexAuthGate"
 import { EdgexChip } from "@/components/edgex/EdgexPrimitives"
 import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
@@ -55,37 +56,43 @@ export const EdgexCareersScreen: FC<EdgexCareersScreenProps> = function EdgexCar
         />
       </View>
 
-      <View style={{ paddingHorizontal: spacing.lg, gap: spacing.sm }}>
-        {jobs === null ? (
-          <ActivityIndicator color={edgex.signal} style={{ marginTop: spacing.lg }} />
-        ) : jobs.length === 0 ? (
-          <Text text="No open roles right now — check back soon." style={{ color: edgex.textDim }} />
-        ) : (
-          jobs.map((job) => (
-            <Pressable
-              key={job.id}
-              onPress={() => navigation.navigate("EdgexJobDetail", { jobId: job.id })}
-              style={{
-                backgroundColor: edgex.surface,
-                borderWidth: 1,
-                borderColor: edgex.hairline,
-                borderRadius: 10,
-                padding: spacing.md,
-              }}
-            >
-              <Text
-                text={job.title}
-                style={{ fontFamily: typography.primary.medium, color: edgex.text, fontSize: 17, marginBottom: 4 }}
-              />
-              <Text text={job.department} style={{ color: edgex.textDim, fontSize: 13, marginBottom: spacing.sm }} />
-              <View style={{ flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" }}>
-                <EdgexChip label={job.location} fontFamily={typography.primary.medium} outline />
-                <EdgexChip label={job.employment_type} fontFamily={typography.primary.medium} outline />
-              </View>
-            </Pressable>
-          ))
-        )}
-      </View>
+      <EdgexAuthGate
+        onNavigateToSignUp={() => navigation.navigate("EdgexSignUp")}
+        title="Sign in to view open roles"
+        subtitle="We ask candidates to sign in so we can keep applications connected to your account and follow up on the right thread."
+      >
+        <View style={{ paddingHorizontal: spacing.lg, gap: spacing.sm }}>
+          {jobs === null ? (
+            <ActivityIndicator color={edgex.signal} style={{ marginTop: spacing.lg }} />
+          ) : jobs.length === 0 ? (
+            <Text text="No open roles right now — check back soon." style={{ color: edgex.textDim }} />
+          ) : (
+            jobs.map((job) => (
+              <Pressable
+                key={job.id}
+                onPress={() => navigation.navigate("EdgexJobDetail", { jobId: job.id })}
+                style={{
+                  backgroundColor: edgex.surface,
+                  borderWidth: 1,
+                  borderColor: edgex.hairline,
+                  borderRadius: 10,
+                  padding: spacing.md,
+                }}
+              >
+                <Text
+                  text={job.title}
+                  style={{ fontFamily: typography.primary.medium, color: edgex.text, fontSize: 17, marginBottom: 4 }}
+                />
+                <Text text={job.department} style={{ color: edgex.textDim, fontSize: 13, marginBottom: spacing.sm }} />
+                <View style={{ flexDirection: "row", gap: spacing.xs, flexWrap: "wrap" }}>
+                  <EdgexChip label={job.location} fontFamily={typography.primary.medium} outline />
+                  <EdgexChip label={job.employment_type} fontFamily={typography.primary.medium} outline />
+                </View>
+              </Pressable>
+            ))
+          )}
+        </View>
+      </EdgexAuthGate>
 
       <View style={{ height: spacing.xxl }} />
     </EdgexScreenShell>

@@ -1,10 +1,11 @@
 import { Pressable, ScrollView, View } from "react-native"
 
 import { Text } from "@/components/Text"
-import { LEFT_MENU, TOP_NAV } from "@/content/edgexContent"
+import { LEFT_MENU, PAGES, TOP_NAV } from "@/content/edgexContent"
 import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
 
+import { EdgexFoldableMenu } from "./EdgexFoldableMenu"
 import { EdgexLogo } from "./EdgexLogo"
 
 export interface EdgexDrawerContentProps {
@@ -38,11 +39,20 @@ export function EdgexDrawerContent({ onNavigate, onClose }: EdgexDrawerContentPr
           marginBottom: spacing.sm,
         }}
       />
-      {TOP_NAV.map((item) => (
-        <Pressable key={item.route} onPress={() => go(item.route)} style={{ paddingVertical: 10 }}>
-          <Text text={item.label} style={{ color: edgex.text, fontSize: 15 }} />
-        </Pressable>
-      ))}
+      {TOP_NAV.map((item) =>
+        item.route === "EdgexLearn" ? (
+          <EdgexFoldableMenu
+            key={item.route}
+            label={item.label}
+            sections={PAGES.learn.sections}
+            onSelect={() => go(item.route)}
+          />
+        ) : (
+          <Pressable key={item.route} onPress={() => go(item.route)} style={{ paddingVertical: 10 }}>
+            <Text text={item.label} style={{ color: edgex.text, fontSize: 15 }} />
+          </Pressable>
+        ),
+      )}
 
       <View style={{ height: 1, backgroundColor: edgex.hairline, marginVertical: spacing.lg }} />
 

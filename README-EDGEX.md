@@ -38,8 +38,19 @@ plugins: [
 
 **`tsconfig.json`** — add under `compilerOptions`:
 ```json
-"experimentalDecorators": true
+"experimentalDecorators": true,
+"strictPropertyInitialization": false
 ```
+The second one is needed because WatermelonDB's decorated model fields
+(`@text`, `@field`) can't carry TypeScript's `!` definite-assignment
+assertion — combined with legacy decorators, Babel's TypeScript transform
+throws `Definitely assigned fields cannot be initialized here, but only in
+the constructor` at bundle time if you try. The models in this zip already
+have `!` removed for that reason; disabling
+`strictPropertyInitialization` (a sub-flag of `strict`) stops `tsc` from
+separately flagging those same fields as "has no initializer" — it doesn't
+affect runtime behavior, since Metro/Babel doesn't type-check at bundle
+time anyway.
 
 No `app.config.ts` / Expo config plugin changes needed — WatermelonDB's
 SQLite adapter auto-links like any other native module under a custom dev
@@ -113,7 +124,70 @@ divisions, why a given industry's problem maps to a given service line) on
 top of the original catalog listing, not just longer versions of the same
 bullet points.
 
-## What's where
+## 7. User identification & auth gating (this revision)
+
+- **Landing page now includes an embedded sign-in panel** —
+  `EdgexMiniLoginPanel.tsx`, shown directly in the Home hero (next to the
+  headline on wide screens, stacked below on mobile). Returning visitors can
+  identify themselves without leaving the landing page; it shows a "signed in
+  as ⟨email⟩ / Sign out" state once authenticated.
+- **Careers now requires sign-in.** `EdgexAuthGate.tsx` wraps the job listing
+  on `/careers`, the full listing on `/careers/:jobId`, and the form on
+  `/careers/:jobId/apply` — signed-out visitors see the same compact login
+  panel in place of that content instead of being redirected away, so they
+  don't lose their place once they sign in. The Apply form also prefills the
+  email field from the signed-in session.
+- This uses the same Supabase-auth-backed `useSupabaseAuth()` hook the
+  Login/Sign-up screens already used — no new auth system, just applied more
+  broadly.
+
+**Bug fix, unrelated to this request but found while syncing your upload
+against my last build:** `JobModel`/`ApplicationModel`'s `@text`/`@field`
+decorators had been stripped out somewhere between my last delivery and your
+upload (leaving plain undecorated class fields, which WatermelonDB can't map
+to columns), `ApplicationModel` was also missing the `syncStatus` field
+entirely, and `createdAt` was being set to `Date.now()` (a number) instead of
+an ISO string. All three are restored in this zip.
+
+**Second bug fix:** WatermelonDB reserves the exact column name `created_at`
+for its own internal timestamp bookkeeping and requires it to be typed
+`number` — it threw `created_at must be of type number and not optional` the
+moment `applications` had any rows, since our column was a plain string. The
+local WatermelonDB column/field is renamed to `submitted_at`/`submittedAt`
+throughout `schema.ts`, `models/Application.ts`, and `applicationsSync.ts`.
+The Supabase side is untouched — the outgoing upsert still writes to
+Postgres's `created_at` column under that name, since that's a completely
+unrelated column with no such reserved-name conflict.
+
+## 8. Landing page rebuild (this revision)
+
+- **Sticky header on web** — `EdgexScreenShell.tsx` now pins the header via
+  CSS `position: sticky` on web builds specifically; native keeps the
+  ordinary scrolls-with-content header, which is the expected mobile pattern
+  (native `ScrollView` doesn't support CSS sticky the way react-native-web
+  does).
+- **"Why EDGEX" value pillars** — 6 short pillar cards (`WHY_US` in
+  `edgexContent.ts`): full-stack ownership, power independence, the 5 QPU
+  architectures, engagement-scoped delivery, quantum-safe security, the 7
+  divisions.
+- **Product/service highlight cards** — replaced the old plain-text "where
+  to go next" links with actual visual card tiles linking to Products/Services.
+- **Industry mapping teaser** — a 4-card preview pulled from the real
+  Industries page content, with a link through to the full page.
+- **Trust & compliance section** (`TRUST_SIGNALS`) — registered entity
+  status, NRC-compliant partner relationship, governance oversight,
+  quantum-safe security. I did **not** add fake client logos or
+  testimonials — there's no real client data to draw from, and inventing
+  some would misrepresent the business, so this section uses only verifiable
+  facts already established elsewhere on the site (registry status, the
+  Corporate Governance page, etc.).
+- **Refined CTA row** — "Request a Consultation" (mailto), "Explore
+  Solutions" (→ Services), "View Open Roles" (→ Careers), plus a closing CTA
+  band above the footer.
+- Tactile press feedback (`EdgexPressableScale`) extended to the new card
+  grids.
+
+
 
 ```
 app/
@@ -131,6 +205,130 @@ assets/
   images/edgex-logo.png         your uploaded logo artwork
 ```
 
+## 9. .env, the Learn mega-menu, and the scientist illustration (this revision)
+
+- **`.env`** — a real `.env` file (not just `.env.example`) is now included
+  with placeholder Supabase values already in the right shape; swap in your
+  actual project URL/anon key and everything else just works.
+- **New "Learn" page** (`/learn`) — the specific quantum ML capabilities
+  behind Services, grouped "By capability" (anomaly detection, optimization,
+  Bayesian networks, reinforcement learning, Monte Carlo, complex systems)
+  and "By finance use case" (derivatives pricing, time-series forecasting,
+  portfolio optimization, risk modeling, worked finance examples), plus
+  practical tutorials. Added to `TOP_NAV`.
+- **Foldable mega-menu** (`EdgexFoldableMenu.tsx`) — modeled on the D-Wave
+  reference screenshot's Solutions mega-menu (grouped columns under a nav
+  item). Since there's no hover state on a touch UI, it's a tap-to-expand
+  accordion in the drawer instead of a hover flyout — tapping "Learn" expands
+  the same grouped columns in place. It reads directly from the Learn page's
+  own `sections`, so the menu and the page content can't drift apart from
+  editing one and not the other.
+- **"Show the face of some scientist" — handled differently than asked, on
+  purpose:** I don't have an image-generation tool available, and I won't
+  pull a real person's photo from a web search to represent an unnamed
+  "scientist" on a commercial site — that would imply a real, identifiable
+  person endorses or works for EDGEX without their knowledge or consent,
+  on top of the licensing problem of using someone else's photo. What's in
+  this build instead is `EdgexIllustration.tsx`'s new `"bust"` glyph — a
+  clearly abstract, anonymized head-and-shoulders silhouette in the same
+  procedural style as everything else on the site — used on the Learn and
+  Leadership pages. If you have real team photos you're able to use (actual
+  employees, actual consent), send them over and I'll wire those in as real
+  images instead — that's a straightforward swap, just needs real source
+  material I don't have access to.
+
+## 10. Running the web build over a private, local-only HTTPS URL
+
+Two options depending on whether you actually need TLS or just want the URL
+to drop the port number:
+
+**Option A — plain HTTP on port 80, no certs needed at all:**
+```bash
+npm run web:port80
+```
+Runs `expo start --web --port 80` directly — Metro binds straight to 80, so
+the URL is just `http://localhost` with nothing after it. Simplest option if
+you don't specifically need HTTPS.
+
+**Option B — HTTPS on port 443** (uses the mkcert + local-ssl-proxy setup
+below): `web:https-proxy` now runs `local-ssl-proxy --source 443 --target
+8081` instead of 8443, so the browsable URL is `https://localhost` with no
+port suffix.
+
+**Both options bind a privileged port (<1024)**, which needs elevated
+permissions:
+- **Windows:** run the terminal "as Administrator." If port 80/443 is
+  already in use (IIS, Skype, and similar often grab 80 by default), you'll
+  get an address-in-use error — stop whatever's holding it, or pick a
+  different port.
+- **macOS/Linux:** prefix the command with `sudo` (e.g. `sudo npm run
+  web:port80`), since ports below 1024 require root there.
+
+`npm run web` (plain, port 8081, no elevation needed) is still there
+unchanged for everyday dev — use the port-80/443 scripts specifically when
+you need the standard-port URL.
+
+`local-ssl-proxy` is a devDependency; `mkcert` is a one-time OS tool
+install, not an npm package, so that step's manual:
+
+**One-time setup:**
+
+A self-signed `certs/localhost.pem` + `certs/localhost-key.pem` pair is
+already included in this zip (covers `localhost`, `127.0.0.1`, and `::1`,
+valid until Oct 2028) — `local-ssl-proxy` will work immediately with it.
+The one thing it *doesn't* do is suppress your browser's "not trusted"
+warning, since it wasn't issued by a CA your machine trusts (that's what
+`mkcert -install` is for). Two options:
+
+- **Just click through the warning** ("Advanced → Proceed to localhost") —
+  works fine, one-time per browser, nothing else to install.
+- **Or install `mkcert` and regenerate** for a warning-free cert:
+  1. Install `mkcert`: Windows `choco install mkcert` (or `scoop install
+     mkcert`); macOS `brew install mkcert`; Linux via your package manager or
+     the mkcert GitHub releases.
+  2. `mkcert -install` — installs a local CA into your system/browser trust
+     stores, once per machine.
+  3. From the project root, overwrite the included pair:
+     ```bash
+     mkcert -cert-file certs/localhost.pem -key-file certs/localhost-key.pem localhost 127.0.0.1 ::1
+     ```
+
+Either way, `certs/` should be in `.gitignore` — these are local dev
+certs, not something to commit long-term (the included pair is a
+convenience to get the command running immediately, not meant to be
+your permanent one).
+
+`npm install` pulls in `local-ssl-proxy` (already added as a devDependency).
+
+**Every time you want the HTTPS URL**, run these in two terminals:
+
+```bash
+# Terminal A
+npm run web
+
+# Terminal B — as Administrator/sudo, since 443 is privileged
+npm run web:https-proxy
+```
+
+Then open `https://localhost` (no port). If you did the `mkcert -install`
+step, there's no warning; if you're using the included self-signed pair
+as-is, click through the one-time "not trusted" warning.
+
+**One real limitation, not glossed over:** Metro's Fast Refresh/HMR
+websocket connects back to the plain `ws://localhost:8081` origin, not
+through the proxy — some browsers block that as mixed content on an
+`https://` page (insecure WS from a secure page). If you notice live-reload
+stop working under the proxied URL, that's why; a manual browser refresh
+still picks up changes. Page loads, routing, and Supabase auth all work
+fine either way — it's specifically the auto-reload-on-save convenience
+that can be affected.
+
+For a real deployment (not local dev), HTTPS is provided by whatever host
+serves the exported build — Vercel, Netlify, GoDaddy Airo hosting, etc. all
+terminate HTTPS automatically once you point a domain at them; there's
+nothing in the app itself to configure for that. `npm run bundle:web`
+produces the static `dist/` folder to deploy.
+
 ## Routes
 
 | Path | Screen |
@@ -146,6 +344,7 @@ assets/
 | `/careers` | Careers list |
 | `/careers/:jobId` | Job detail |
 | `/careers/:jobId/apply` | Apply |
+| `/learn` | Learn (QML capabilities & finance use cases) |
 | `/login` | Sign in |
 | `/signup` | Create account |
 | `/leadership`, `/legal`, `/governance`, `/documentation`, `/api-access`, `/whitepapers`, `/case-studies`, `/newsroom` | Footer-linked pages |

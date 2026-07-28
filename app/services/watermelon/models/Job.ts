@@ -4,14 +4,14 @@ import { field, text } from "@nozbe/watermelondb/decorators"
 export class JobModel extends Model {
   static table = "jobs"
 
-  remoteId!: string
-  title!: string
- department!: string
-  location!: string
-  employmentType!: string
-summary!: string
-   description!: string
-  requirementsJson!: string
-   postedAt!: string
-   active!: boolean
+  @text("remote_id") remoteId: string
+  @text("title") title: string
+  @text("department") department: string
+  @text("location") location: string
+  @text("employment_type") employmentType: string
+  @text("summary") summary: string
+  @text("description") description: string
+  @text("requirements") requirementsJson: string
+  @text("posted_at") postedAt: string
+  @field("active") active: boolean
 }

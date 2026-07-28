@@ -1,5 +1,5 @@
 # Welcome to your new ignited app!
-
+local-ssl-proxy --source 443 --target 8081 --cert ./certs/localhost.pem --key ./certs/localhost-key.pem
 > The latest and greatest boilerplate for Infinite Red opinions
 
 This is the boilerplate that [Infinite Red](https://infinite.red) uses as a way to test bleeding-edge changes to our React Native stack.

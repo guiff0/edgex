@@ -1,7 +1,7 @@
 {
-  "name": "edgex",
-  "slug": "edgex",
-  "scheme": "edgex",
+  "name": "PizzaApp",
+  "slug": "PizzaApp",
+  "scheme": "pizzaapp",
   "version": "1.0.0",
   "orientation": "portrait",
   "userInterfaceStyle": "automatic",
@@ -16,7 +16,7 @@
   ],
   "android": {
     "icon": "./assets/images/app-icon-android-legacy.png",
-    "package": "com.edgex",
+    "package": "com.pizzaapp",
     "adaptiveIcon": {
       "foregroundImage": "./assets/images/app-icon-android-adaptive-foreground.png",
       "backgroundImage": "./assets/images/app-icon-android-adaptive-background.png"
@@ -27,7 +27,7 @@
   "ios": {
     "icon": "./assets/images/app-icon-ios.png",
     "supportsTablet": true,
-    "bundleIdentifier": "com.edgex"
+    "bundleIdentifier": "com.pizzaapp"
   },
   "web": {
     "favicon": "./assets/images/app-icon-web-favicon.png",
@@ -35,7 +35,6 @@
   },
   "plugins": [
     "expo-localization",
-     "expo-sqlite",
     "expo-font",
     [
       "expo-splash-screen",

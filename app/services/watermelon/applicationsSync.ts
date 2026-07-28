@@ -38,7 +38,8 @@ export async function submitApplication(input: ApplicationInput): Promise<{ id: 
       application.resumePath = ""
       application.uploadStatus = "pending"
       application.syncStatus = "pending"
-      application.createdAt = new Date().toISOString()
+      application.createdAt = Date.now()
+
     })
     recordId = record.id
   })

@@ -1,6 +1,6 @@
 import { Q } from "@nozbe/watermelondb"
 
-import { SEED_JOBS, type Job } from "@/content/edgexJobs"
+import { SEED_JOBS, type Job, type JobField, type JobRole } from "@/content/edgexJobs"
 import { isSupabaseConfigured, supabase } from "@/services/supabase/client"
 
 import { database } from "./database"
@@ -14,6 +14,8 @@ type SupabaseJobRow = {
   department: string
   location: string
   employment_type: string
+  role: string
+  field: string
   summary: string | null
   description: string | null
   requirements: string[] | null
@@ -56,6 +58,8 @@ function applyRow(job: JobModel, row: SupabaseJobRow) {
   job.department = row.department
   job.location = row.location
   job.employmentType = row.employment_type
+  job.role = row.role
+  job.jobField = row.field
   job.summary = row.summary ?? ""
   job.description = row.description ?? ""
   job.requirementsJson = JSON.stringify(row.requirements ?? [])
@@ -86,6 +90,8 @@ function mapModel(model: JobModel): Job {
     department: model.department,
     location: model.location,
     employment_type: model.employmentType,
+    role: model.role as JobRole,
+    field: model.jobField as JobField,
     summary: model.summary,
     description: model.description,
     requirements: safeParseRequirements(model.requirementsJson),

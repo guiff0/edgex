@@ -1,3 +1,4 @@
+import { Platform } from "react-native"
 import "react-native-url-polyfill/auto"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { createClient } from "@supabase/supabase-js"
@@ -25,7 +26,15 @@ export const supabase = createClient(
       storage: AsyncStorage,
       autoRefreshToken: true,
       persistSession: true,
-      detectSessionInUrl: false,
+      // Web needs this on: after a user clicks the email-confirmation link,
+      // Supabase redirects back with the session in the URL, and this is
+      // what actually picks it up. It was hardcoded false before, which
+      // meant confirmed accounts never got signed in on web — the account
+      // *was* created, but nothing ever showed the user as signed in, which
+      // is exactly what "sign-up doesn't work" looks like from the outside.
+      // Native has no URL to detect a session from (no `window`), so it
+      // stays false there.
+      detectSessionInUrl: Platform.OS === "web",
     },
   },
 )

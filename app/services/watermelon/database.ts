@@ -5,6 +5,7 @@ import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite"
 
 import { ApplicationModel } from "./models/Application"
 import { JobModel } from "./models/Job"
+import { edgexMigrations } from "./migrations"
 import { edgexSchema } from "./schema"
 
 // WatermelonDB's SQLite adapter is native-only (it uses JSI). Since this
@@ -15,11 +16,13 @@ const adapter =
   Platform.OS === "web"
     ? new LokiJSAdapter({
         schema: edgexSchema,
+        migrations: edgexMigrations,
         useWebWorker: false,
         useIncrementalIndexedDB: true,
       })
     : new SQLiteAdapter({
         schema: edgexSchema,
+        migrations: edgexMigrations,
         jsi: true,
       })
 

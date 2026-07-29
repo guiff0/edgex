@@ -71,6 +71,7 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
               }}
             />
             <View style={{ flexDirection: "row", gap: spacing.xs, flexWrap: "wrap", marginBottom: spacing.lg }}>
+              <EdgexChip label={job.field} fontFamily={typography.primary.medium} outline />
               <EdgexChip label={job.location} fontFamily={typography.primary.medium} outline />
               <EdgexChip label={job.employment_type} fontFamily={typography.primary.medium} outline />
             </View>

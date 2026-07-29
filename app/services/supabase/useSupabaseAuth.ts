@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
+import { Platform } from "react-native"
 import type { Session } from "@supabase/supabase-js"
 
 import { isSupabaseConfigured, supabase } from "./client"
@@ -49,7 +50,16 @@ export function useSupabaseAuth(): UseSupabaseAuthResult {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: fullName ? { data: { full_name: fullName } } : undefined,
+      options: {
+        ...(fullName ? { data: { full_name: fullName } } : {}),
+        // On web, point the confirmation link back at wherever the app is
+        // actually running (localhost during dev, algu.net in production)
+        // instead of depending solely on the dashboard's Site URL being set
+        // correctly. That URL must also be added to Supabase's Redirect
+        // URLs allowlist (Authentication -> URL Configuration) or the link
+        // will be rejected even though it's pointed correctly.
+        ...(Platform.OS === "web" ? { emailRedirectTo: window.location.origin } : {}),
+      },
     })
     if (error) throw error
   }, [])

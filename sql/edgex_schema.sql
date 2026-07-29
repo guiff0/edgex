@@ -1,12 +1,18 @@
 -- Run this in the Supabase SQL editor for your project.
--- Mirrors app/services/powersync/schema.ts — keep the two in sync.
+-- Mirrors app/services/watermelon/schema.ts — keep the two in sync.
 
 create table if not exists public.jobs (
-  id uuid primary key default gen_random_uuid(),
+  -- text, not uuid: job ids are readable slugs (e.g. "qpu-design-engineer"),
+  -- matching app/content/edgexJobs.ts and used directly in URLs
+  -- (/careers/:jobId) — there's no gen_random_uuid() default because the
+  -- app always supplies its own id explicitly.
+  id text primary key,
   title text not null,
   department text not null,
   location text not null,
   employment_type text not null,
+  role text not null, -- function role, e.g. "Engineering" — Careers page filter
+  field text not null, -- technical field, e.g. "Quantum Hardware" — Careers page filter
   summary text not null default '',
   description text not null default '',
   requirements text not null default '[]', -- JSON-encoded string array
@@ -15,8 +21,11 @@ create table if not exists public.jobs (
 );
 
 create table if not exists public.applications (
-  id uuid primary key default gen_random_uuid(),
-  job_id uuid references public.jobs (id),
+  -- text, not uuid: this id is generated client-side by WatermelonDB (its
+  -- own non-UUID string id format) and pushed as-is during sync, so the
+  -- column has to accept that format rather than enforcing UUID syntax.
+  id text primary key,
+  job_id text references public.jobs (id),
   full_name text not null,
   email text not null,
   phone text,

@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { Platform, TextStyle, View, ViewStyle } from "react-native"
+import { Platform, Pressable, TextStyle, View, ViewStyle } from "react-native"
 
 import { Text } from "@/components/Text"
 import { edgex } from "@/theme/edgexPalette"
@@ -100,20 +100,35 @@ export function EdgexCard({
   )
 }
 
-export function EdgexChip({ label, fontFamily, outline }: { label: string; fontFamily: string; outline?: boolean }) {
+export function EdgexChip({
+  label,
+  fontFamily,
+  outline,
+  selected,
+  onPress,
+}: {
+  label: string
+  fontFamily: string
+  outline?: boolean
+  selected?: boolean
+  onPress?: () => void
+}) {
+  const isOutline = outline && !selected
   return (
-    <View
-      style={{
-        backgroundColor: outline ? "transparent" : edgex.surfaceRaised,
-        borderWidth: outline ? 1 : 0,
-        borderColor: edgex.steel,
-        borderRadius: 999,
-        paddingVertical: 8,
-        paddingHorizontal: 14,
-      }}
-    >
-      <Text text={label} style={{ fontFamily, color: edgex.text, fontSize: 13 }} />
-    </View>
+    <Pressable onPress={onPress}>
+      <View
+        style={{
+          backgroundColor: selected ? edgex.signal : isOutline ? "transparent" : edgex.surfaceRaised,
+          borderWidth: isOutline ? 1 : 0,
+          borderColor: edgex.steel,
+          borderRadius: 999,
+          paddingVertical: 8,
+          paddingHorizontal: 14,
+        }}
+      >
+        <Text text={label} style={{ fontFamily, color: selected ? edgex.ink : edgex.text, fontSize: 13 }} />
+      </View>
+    </Pressable>
   )
 }
 

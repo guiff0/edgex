@@ -329,7 +329,61 @@ terminate HTTPS automatically once you point a domain at them; there's
 nothing in the app itself to configure for that. `npm run bundle:web`
 produces the static `dist/` folder to deploy.
 
+## 11. Sign-up fix + expanded Careers with dynamic filters (this revision)
+
+**Sign-up bug fix:** `services/supabase/client.ts` had `detectSessionInUrl:
+false` hardcoded. On web, that's what actually reads the session out of the
+URL after a user clicks their email-confirmation link — with it off, the
+account genuinely was being created in Supabase, but the app never picked up
+the resulting session, so signing up looked broken from the outside even
+though it technically "worked." Now `detectSessionInUrl: Platform.OS ===
+"web"` (native has no URL to read a session from, so it stays `false`
+there). Also added an explicit `emailRedirectTo` in `signUp()` pointing at
+`window.location.origin` on web, instead of relying solely on whatever the
+Supabase dashboard's Site URL is set to.
+
+**One thing this can't fix from code, worth checking in your Supabase
+dashboard if sign-up still fails after this:**
+- **Authentication → Providers → Email** is enabled (new projects sometimes
+  don't have it on)
+- **Authentication → URL Configuration → Redirect URLs** includes wherever
+  you're actually running the app (`http://localhost:8081`,
+  `https://localhost`, `https://algu.net`, etc.) — Supabase rejects
+  confirmation redirects to URLs not on this list
+- If "Confirm email" is enabled (default), the account won't be usable until
+  the confirmation link is clicked — check your spam folder / Supabase's
+  Auth logs (Authentication → Logs) if the email never arrives
+
+**Careers expanded from 4 to 13 seed job postings**, spanning exactly the
+areas you asked for — quantum hardware, quantum ML, quantum finance, fraud &
+anomaly detection, and error correction — each with a real description and
+a technical requirements list. Every `Job` now carries a `role` (function
+role: Engineering / Research / Data Science / Consulting & Delivery) and a
+`field` (technical area: Quantum Hardware / Quantum Machine Learning /
+Quantum Finance / Fraud & Anomaly Detection / Error Correction / Energy
+Systems / Enterprise Solutions).
+
+- **Dynamic filters on `/careers`** — two rows of tappable chips (Role,
+  Field), combined with AND logic, updating the list live. `EdgexChip` now
+  supports a `selected`/`onPress` toggle state (used to be display-only).
+- **Threaded through the whole pipeline**, not just the seed data: WatermelonDB
+  schema (`schema.ts`, bumped to version 2 with a proper migration in
+  `migrations.ts` so an already-installed local database upgrades instead of
+  breaking), `JobModel`, `jobsSync.ts`'s pull/map functions, and the Supabase
+  side (`sql/edgex_schema.sql` has the new `role`/`field` columns).
+- **`sql/edgex_jobs_seed.sql`** (new) — an upsert statement seeding the real
+  Supabase `jobs` table with the same 13 postings the app falls back to
+  locally, generated directly from `edgexJobs.ts` so they can't drift apart.
+  Run it after `edgex_schema.sql`.
+- **Also fixed while building that seed file:** both `jobs.id` and
+  `applications.id` were declared `uuid` in the SQL, but the app never
+  generates real UUIDs for either — job ids are readable slugs
+  (`"qpu-design-engineer"`) and WatermelonDB generates its own non-UUID
+  string ids for applications. Every sync push would have failed Postgres's
+  UUID type validation. Both columns are now `text`.
+
 ## Routes
+
 
 | Path | Screen |
 |---|---|

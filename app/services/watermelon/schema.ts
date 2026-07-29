@@ -3,7 +3,7 @@ import { appSchema, tableSchema } from "@nozbe/watermelondb"
 // Mirrors sql/edgex_schema.sql on the Supabase side — keep both in sync
 // when you change columns.
 export const edgexSchema = appSchema({
-  version: 1,
+  version: 2,
   tables: [
     tableSchema({
       name: "jobs",
@@ -13,6 +13,8 @@ export const edgexSchema = appSchema({
         { name: "department", type: "string" },
         { name: "location", type: "string" },
         { name: "employment_type", type: "string" },
+        { name: "role", type: "string", isIndexed: true }, // function role, e.g. "Engineering" — for Careers filters
+        { name: "field", type: "string", isIndexed: true }, // technical field, e.g. "Quantum Hardware" — for Careers filters
         { name: "summary", type: "string" },
         { name: "description", type: "string" },
         { name: "requirements", type: "string" }, // JSON-encoded string array

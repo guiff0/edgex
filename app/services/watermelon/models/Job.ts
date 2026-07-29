@@ -9,6 +9,8 @@ export class JobModel extends Model {
   @text("department") department: string
   @text("location") location: string
   @text("employment_type") employmentType: string
+  @text("role") role: string
+  @text("field") jobField: string
   @text("summary") summary: string
   @text("description") description: string
   @text("requirements") requirementsJson: string

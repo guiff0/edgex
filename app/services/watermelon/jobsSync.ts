@@ -1,6 +1,6 @@
 import { Q } from "@nozbe/watermelondb"
 
-import { SEED_JOBS, type Job, type JobField, type JobRole } from "@/content/edgexJobs"
+import { SEED_JOBS, type Job, type JobField, type JobLocation, type JobRole } from "@/content/edgexJobs"
 import { isSupabaseConfigured, supabase } from "@/services/supabase/client"
 
 import { database } from "./database"
@@ -13,6 +13,7 @@ type SupabaseJobRow = {
   title: string
   department: string
   location: string
+  location_category: string
   employment_type: string
   role: string
   field: string
@@ -21,6 +22,11 @@ type SupabaseJobRow = {
   requirements: string[] | null
   posted_at: string | null
   active: boolean
+  job_identification: string | null
+  full_address: string | null
+  base_pay_salary: string | null
+  responsibilities: string[] | null
+  preferred_qualifications: string[] | null
 }
 
 /** Pulls active jobs from Supabase and upserts them into the local WatermelonDB collection. Safe to call when offline or unconfigured — it just does nothing. */
@@ -57,6 +63,7 @@ function applyRow(job: JobModel, row: SupabaseJobRow) {
   job.title = row.title
   job.department = row.department
   job.location = row.location
+  job.locationCategory = row.location_category
   job.employmentType = row.employment_type
   job.role = row.role
   job.jobField = row.field
@@ -65,6 +72,11 @@ function applyRow(job: JobModel, row: SupabaseJobRow) {
   job.requirementsJson = JSON.stringify(row.requirements ?? [])
   job.postedAt = row.posted_at ?? ""
   job.active = !!row.active
+  job.jobIdentification = row.job_identification ?? ""
+  job.fullAddress = row.full_address ?? ""
+  job.basePaySalary = row.base_pay_salary ?? ""
+  job.responsibilitiesJson = JSON.stringify(row.responsibilities ?? [])
+  job.preferredQualificationsJson = JSON.stringify(row.preferred_qualifications ?? [])
 }
 
 /** Reads jobs from WatermelonDB; falls back to bundled seed data if the collection is empty (first run, offline, or Supabase not configured yet). */
@@ -89,6 +101,7 @@ function mapModel(model: JobModel): Job {
     title: model.title,
     department: model.department,
     location: model.location,
+    locationCategory: model.locationCategory as JobLocation,
     employment_type: model.employmentType,
     role: model.role as JobRole,
     field: model.jobField as JobField,
@@ -97,6 +110,13 @@ function mapModel(model: JobModel): Job {
     requirements: safeParseRequirements(model.requirementsJson),
     posted_at: model.postedAt,
     active: model.active,
+    jobIdentification: model.jobIdentification || undefined,
+    fullAddress: model.fullAddress || undefined,
+    basePaySalary: model.basePaySalary || undefined,
+    responsibilities: model.responsibilitiesJson ? safeParseRequirements(model.responsibilitiesJson) : undefined,
+    preferredQualifications: model.preferredQualificationsJson
+      ? safeParseRequirements(model.preferredQualificationsJson)
+      : undefined,
   }
 }
 

@@ -21,11 +21,20 @@ export const JOB_FIELDS: JobField[] = [
   "Enterprise Solutions",
 ]
 
+export type JobLocation =
+  | "Charlotte, NC"
+  | "New York, NY"
+  | "Bayonne, NJ"
+  | "Remote (US)"
+
+export const JOB_LOCATIONS: JobLocation[] = ["Charlotte, NC", "New York, NY", "Bayonne, NJ", "Remote (US)"]
+
 export type Job = {
   id: string
   title: string
   department: string
   location: string
+  locationCategory: JobLocation
   employment_type: string
   role: JobRole
   field: JobField
@@ -33,6 +42,16 @@ export type Job = {
   description: string
   requirements: string[]
   posted_at: string
+  // Optional richer corporate-posting fields — present on more detailed
+  // listings (e.g. the Bayonne posting), omitted on simpler ones. When
+  // present, the Job Detail screen renders the full "Job Information" block
+  // plus Responsibilities/Required/Preferred as three separate sections
+  // instead of a single flat requirements list.
+  jobIdentification?: string
+  fullAddress?: string
+  basePaySalary?: string
+  responsibilities?: string[]
+  preferredQualifications?: string[]
   active: boolean
 }
 
@@ -45,9 +64,11 @@ export type Job = {
 export const SEED_JOBS: Job[] = [
   {
     id: "qpu-design-engineer",
+    jobIdentification: "EDGX-2026-01142",
     title: "QPU Design Engineer",
     department: "Quantum Engineering Division",
     location: "Charlotte, NC (On-site)",
+    locationCategory: "Charlotte, NC",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Quantum Hardware",
@@ -65,9 +86,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "cryogenic-systems-engineer",
+    jobIdentification: "EDGX-2026-01187",
     title: "Cryogenic Systems Engineer",
     department: "Quantum Engineering Division",
     location: "Charlotte, NC (On-site)",
+    locationCategory: "Charlotte, NC",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Quantum Hardware",
@@ -85,9 +108,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "quantum-error-correction-scientist",
+    jobIdentification: "EDGX-2026-01256",
     title: "Quantum Error Correction Research Scientist",
     department: "Research & Innovation Lab",
     location: "Charlotte, NC (On-site) or Remote (US)",
+    locationCategory: "Charlotte, NC",
     employment_type: "Full-time",
     role: "Research",
     field: "Error Correction",
@@ -105,9 +130,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "error-correction-engineer",
+    jobIdentification: "EDGX-2026-01261",
     title: "Quantum Error Correction Engineer",
     department: "Quantum Engineering Division",
     location: "Charlotte, NC (On-site)",
+    locationCategory: "Charlotte, NC",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Error Correction",
@@ -124,9 +151,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "quantum-software-engineer-qml",
+    jobIdentification: "EDGX-2026-01309",
     title: "Quantum Software Engineer (QML)",
     department: "Quantum Software Division",
     location: "Remote (US)",
+    locationCategory: "Remote (US)",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Quantum Machine Learning",
@@ -143,9 +172,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "principal-quantum-algorithms-scientist",
+    jobIdentification: "EDGX-2026-01198",
     title: "Principal Quantum Algorithms Scientist",
     department: "Research & Innovation Lab",
     location: "Charlotte, NC (On-site) or Remote (US)",
+    locationCategory: "Charlotte, NC",
     employment_type: "Full-time",
     role: "Research",
     field: "Quantum Machine Learning",
@@ -162,9 +193,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "senior-quantum-ml-engineer-finance",
+    jobIdentification: "EDGX-2026-01334",
     title: "Senior Quantum ML Engineer, Finance",
     department: "Quantum Software Division",
     location: "New York, NY or Remote (US)",
+    locationCategory: "New York, NY",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Quantum Finance",
@@ -181,9 +214,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "quantitative-researcher-quantum-finance",
+    jobIdentification: "EDGX-2026-01102",
     title: "Quantitative Researcher, Quantum Finance",
     department: "Research & Innovation Lab",
     location: "New York, NY",
+    locationCategory: "New York, NY",
     employment_type: "Full-time",
     role: "Research",
     field: "Quantum Finance",
@@ -200,9 +235,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "quantum-risk-modeling-analyst",
+    jobIdentification: "EDGX-2026-01358",
     title: "Quantum Risk Modeling Analyst",
     department: "Quantum Software Division",
     location: "Remote (US)",
+    locationCategory: "Remote (US)",
     employment_type: "Full-time",
     role: "Data Science",
     field: "Quantum Finance",
@@ -219,9 +256,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "quantum-fraud-detection-data-scientist",
+    jobIdentification: "EDGX-2026-01372",
     title: "Quantum Fraud Detection Data Scientist",
     department: "Quantum Software Division",
     location: "Remote (US)",
+    locationCategory: "Remote (US)",
     employment_type: "Full-time",
     role: "Data Science",
     field: "Fraud & Anomaly Detection",
@@ -238,9 +277,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "ml-engineer-anomaly-detection",
+    jobIdentification: "EDGX-2026-01381",
     title: "Machine Learning Engineer, Anomaly Detection",
     department: "Quantum Software Division",
     location: "Remote (US)",
+    locationCategory: "Remote (US)",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Fraud & Anomaly Detection",
@@ -257,9 +298,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "nuclear-systems-engineer",
+    jobIdentification: "EDGX-2026-00987",
     title: "Nuclear Systems Integration Engineer",
     department: "Advanced Energy Systems Division",
     location: "Charlotte, NC (On-site)",
+    locationCategory: "Charlotte, NC",
     employment_type: "Full-time",
     role: "Engineering",
     field: "Energy Systems",
@@ -276,9 +319,11 @@ export const SEED_JOBS: Job[] = [
   },
   {
     id: "enterprise-solutions-consultant",
+    jobIdentification: "EDGX-2026-01366",
     title: "Enterprise Solutions Consultant",
     department: "Enterprise Solutions Division",
     location: "Remote (US)",
+    locationCategory: "Remote (US)",
     employment_type: "Full-time",
     role: "Consulting & Delivery",
     field: "Enterprise Solutions",
@@ -291,6 +336,47 @@ export const SEED_JOBS: Job[] = [
       "Experience with enterprise procurement and compliance cycles",
     ],
     posted_at: "2026-07-15",
+    active: true,
+  },
+  {
+    id: "principal-swe-agentic-quantum-ai",
+    title: "Principal Software Engineer, Agentic Quantum AI Platforms",
+    department: "Quantum Software Division",
+    location: "Bayonne, NJ (On-site)",
+    locationCategory: "Bayonne, NJ",
+    employment_type: "Full-time",
+    role: "Engineering",
+    field: "Quantum Machine Learning",
+    jobIdentification: "EDGX-2026-04721",
+    fullAddress: "20 Port Jersey Blvd, Bayonne, NJ 07002, US",
+    basePaySalary: "Bayonne, NJ $195,000.00–$260,000.00",
+    summary:
+      "Lead architecture and hands-on development of the agentic orchestration layer behind the EDGEX QML Suite — the system that coordinates quantum and classical workloads across client engagements.",
+    description:
+      "As Principal Software Engineer on the Quantum Software Division's platform team, you'll lead the design, build, and scaling of the agentic orchestration layer underneath the EDGEX QML Suite — the system that decides which parts of a hybrid pipeline run on quantum hardware, which run classically, and how multi-step reasoning, retrieval, and tool use are coordinated across both. This is a hands-on role: you'll write production code, make key architectural calls, and be accountable for what ships, while also setting the multi-year direction for the platform.",
+    requirements: [
+      "8+ years in software engineering, including experience leading architecture for large distributed systems",
+      "Expert-level Python; strong working proficiency in TypeScript or Rust",
+      "Hands-on experience with agentic/orchestration frameworks (LangGraph, AutoGen, or equivalent)",
+      "Strong grounding in retrieval-augmented generation, tool/function calling, and multi-step reasoning patterns",
+      "Distributed systems experience: message queues, gRPC/REST, containerized deployment (Docker/Kubernetes)",
+      "Comfort designing systems that route work across quantum and classical execution backends",
+    ],
+    responsibilities: [
+      "Own the multi-year strategy for the QML Suite's agentic orchestration layer — toolchains, retrieval pipelines, state management, and evaluation loops",
+      "Architect the routing logic that decides which pipeline stages run on EDGEX QPUs versus classical compute, and define clear primitives for when each applies",
+      "Establish standards for the platform's development lifecycle: evaluation, observability, security review, and release readiness",
+      "Contribute directly in Python — services, concurrency, reliability — and set the bar through reference implementations",
+      "Lead design and code reviews; participate directly in incident response and production hardening",
+      "Build reusable agent components: task decomposition, tool/function calling, self-critique loops, and multi-agent coordination",
+      "Partner with the Research & Innovation Lab on moving new orchestration techniques from prototype into the production platform",
+    ],
+    preferredQualifications: [
+      "Experience with quantum SDKs (Qiskit, Cirq, or PennyLane)",
+      "Background in financial services or another regulated, high-stakes domain",
+      "Publications, talks, or open-source contributions related to agentic AI systems",
+    ],
+    posted_at: "2026-07-27",
     active: true,
   },
 ]

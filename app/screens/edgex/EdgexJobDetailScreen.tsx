@@ -2,7 +2,6 @@ import { FC, useEffect, useState } from "react"
 import { ActivityIndicator, View } from "react-native"
 
 import { Text } from "@/components/Text"
-import { EdgexAuthGate } from "@/components/edgex/EdgexAuthGate"
 import { EdgexChip, EdgexListRow, EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
 import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
@@ -13,6 +12,20 @@ import { useAppTheme } from "@/theme/context"
 import { edgex } from "@/theme/edgexPalette"
 
 interface EdgexJobDetailScreenProps extends EdgexStackScreenProps<"EdgexJobDetail"> {}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  const { theme } = useAppTheme()
+  const { spacing, typography } = theme
+  return (
+    <View style={{ flexDirection: "row", marginBottom: spacing.xs }}>
+      <Text
+        text={label}
+        style={{ fontFamily: typography.primary.medium, color: edgex.steel, fontSize: 13, width: 150 }}
+      />
+      <Text text={value} style={{ color: edgex.textDim, fontSize: 13, flex: 1 }} />
+    </View>
+  )
+}
 
 export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function EdgexJobDetailScreen({
   route,
@@ -37,20 +50,25 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
     <EdgexScreenShell currentRoute={route.name} onNavigate={(r) => navigation.navigate(r as never)}>
       <View style={{ paddingHorizontal: spacing.lg, paddingTop: spacing.xl }}>
         <EdgexIllustration variant="careers" height={140} style={{ marginBottom: spacing.lg }} />
-      </View>
 
-      <EdgexAuthGate
-        onNavigateToSignUp={() => navigation.navigate("EdgexSignUp")}
-        title="Sign in to view this role"
-        subtitle="Full role details and the application form are available once you're signed in."
-      >
-        <View style={{ paddingHorizontal: spacing.lg }}>
-          {job === null ? (
+        {job === null ? (
           <ActivityIndicator color={edgex.signal} />
         ) : job === undefined ? (
           <Text text="This role isn't available anymore." style={{ color: edgex.textDim }} />
         ) : (
           <>
+            {job.jobIdentification ? (
+              <Text
+                text={`JOB ID ${job.jobIdentification}`}
+                style={{
+                  fontFamily: typography.primary.medium,
+                  color: edgex.steel,
+                  fontSize: 11,
+                  letterSpacing: 1,
+                  marginBottom: spacing.xs,
+                }}
+              />
+            ) : null}
             <Text
               text={job.department.toUpperCase()}
               style={{
@@ -76,13 +94,70 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
               <EdgexChip label={job.employment_type} fontFamily={typography.primary.medium} outline />
             </View>
 
+            {/* Job Information block — only shown on richer listings that have these fields */}
+            {job.fullAddress || job.basePaySalary ? (
+              <View
+                style={{
+                  backgroundColor: edgex.surface,
+                  borderWidth: 1,
+                  borderColor: edgex.hairline,
+                  borderRadius: 10,
+                  padding: spacing.md,
+                  marginBottom: spacing.lg,
+                }}
+              >
+                <Text
+                  text="Job Information"
+                  style={{
+                    fontFamily: typography.primary.medium,
+                    color: edgex.text,
+                    fontSize: 14,
+                    marginBottom: spacing.sm,
+                  }}
+                />
+                <InfoRow label="Job Category" value={job.field} />
+                <InfoRow label="Business Unit" value={job.department} />
+                <InfoRow label="Posting Date" value={job.posted_at} />
+                {job.fullAddress ? <InfoRow label="Location" value={job.fullAddress} /> : null}
+                <InfoRow label="Job Schedule" value={job.employment_type} />
+                {job.basePaySalary ? <InfoRow label="Base Pay/Salary" value={job.basePaySalary} /> : null}
+              </View>
+            ) : null}
+
+            <Text
+              text="Job Description"
+              style={{
+                fontFamily: typography.primary.medium,
+                color: edgex.text,
+                fontSize: 16,
+                marginBottom: spacing.sm,
+              }}
+            />
             <Text
               text={job.description}
               style={{ color: edgex.textDim, fontSize: 15, lineHeight: 23, marginBottom: spacing.lg }}
             />
 
+            {job.responsibilities && job.responsibilities.length > 0 ? (
+              <>
+                <Text
+                  text="Job responsibilities"
+                  style={{
+                    fontFamily: typography.primary.medium,
+                    color: edgex.text,
+                    fontSize: 16,
+                    marginBottom: spacing.sm,
+                  }}
+                />
+                {job.responsibilities.map((r) => (
+                  <EdgexListRow key={r} text={r} dotColor={edgex.signal} spacing={spacing.sm} />
+                ))}
+                <View style={{ height: spacing.md }} />
+              </>
+            ) : null}
+
             <Text
-              text="Requirements"
+              text={job.responsibilities?.length ? "Required qualifications, capabilities, and skills" : "Requirements"}
               style={{
                 fontFamily: typography.primary.medium,
                 color: edgex.text,
@@ -94,6 +169,24 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
               <EdgexListRow key={req} text={req} dotColor={edgex.signal} spacing={spacing.sm} />
             ))}
 
+            {job.preferredQualifications && job.preferredQualifications.length > 0 ? (
+              <>
+                <View style={{ height: spacing.md }} />
+                <Text
+                  text="Preferred qualifications, capabilities, and skills"
+                  style={{
+                    fontFamily: typography.primary.medium,
+                    color: edgex.text,
+                    fontSize: 16,
+                    marginBottom: spacing.sm,
+                  }}
+                />
+                {job.preferredQualifications.map((q) => (
+                  <EdgexListRow key={q} text={q} dotColor={edgex.teal} spacing={spacing.sm} />
+                ))}
+              </>
+            ) : null}
+
             <View style={{ marginTop: spacing.lg }}>
               <EdgexPrimaryButton
                 text="Apply for this role →"
@@ -102,9 +195,8 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
               />
             </View>
           </>
-          )}
-        </View>
-      </EdgexAuthGate>
+        )}
+      </View>
 
       <View style={{ height: spacing.xxl }} />
     </EdgexScreenShell>

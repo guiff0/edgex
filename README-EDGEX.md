@@ -382,7 +382,75 @@ Systems / Enterprise Solutions).
   string ids for applications. Every sync push would have failed Postgres's
   UUID type validation. Both columns are now `text`.
 
-## Routes
+## 12. Public Careers, 3-way filters, 14 jobs, and the rich job format (this revision)
+
+**Expanding allowed origins to algu.net/algu.org:** the request URL you
+showed (`http://24.187.56.217:54321/auth/v1/token`) is a **self-hosted**
+Supabase instance (port 54321 is the default Kong gateway port for
+self-hosted/local Supabase, not Supabase Cloud) — so this isn't a dashboard
+toggle, it's a config change on whichever machine runs that stack. The app
+code already sends `emailRedirectTo: window.location.origin` (from the
+sign-up fix last round), so it automatically adapts to wherever it's
+actually served from — algu.net, algu.org, or localhost — with **no code
+change needed**. What needs to change is the server's allowlist:
+
+- **Supabase CLI (`supabase start` / local dev):** in `supabase/config.toml`,
+  under `[auth]`:
+  ```toml
+  additional_redirect_urls = ["https://algu.net", "https://algu.org", "https://www.algu.net", "https://www.algu.org"]
+  ```
+  then `supabase stop && supabase start` to reload.
+- **Docker Compose self-hosted:** set `GOTRUE_URI_ALLOW_LIST` (comma-separated,
+  no spaces) on the `auth`/GoTrue service in your `.env` or
+  `docker-compose.yml`, e.g. `GOTRUE_URI_ALLOW_LIST=https://algu.net,https://algu.org,https://www.algu.net,https://www.algu.org`,
+  then restart that container.
+
+**Careers is now public — no login required to browse or view roles.**
+`EdgexAuthGate` is removed from `/careers` and `/careers/:jobId`; it now
+only wraps the actual `/careers/:jobId/apply` form. Every job card in the
+list has its own **Apply →** button (goes straight to the apply form) next
+to a **View details** button — signing in only happens at the point someone
+actually tries to apply, per your request.
+
+**Three dynamic filters on `/careers`**, each independently toggleable and
+combined with AND logic:
+- **Job Category** (`field`)
+- **Job Function** (`role`)
+- **Job Location** (`locationCategory`) — new; added `"Bayonne, NJ"` as a
+  location alongside the existing Charlotte/New York/Remote options
+
+**Grew from 13 to 14 postings** — added a Bayonne, NJ role: *Principal
+Software Engineer, Agentic Quantum AI Platforms*. About the JPMorgan listing
+you pasted: I didn't post it verbatim (see the note at the top of this
+response) — that's a real company's actual job requisition (real ID, real
+address, real comp figures), and republishing it as an EDGEX posting would
+either infringe their copyright or, worse, actively mislead applicants about
+who's really hiring. What's in this build instead is the same *structure*
+you showed, written as an original EDGEX posting for a comparable
+principal-level agentic-AI role.
+
+**New rich job-posting format**, used on the Bayonne posting (and easy to
+add to others — every field is optional): `jobIdentification` (shown as
+"JOB ID EDGX-2026-XXXXX" on both the list and detail page), `fullAddress`,
+`basePaySalary`, and `responsibilities`/`preferredQualifications` as
+separate sections from `requirements` — rendering as **Job Information /
+Job Description / Job responsibilities / Required qualifications / Preferred
+qualifications**, matching the shape of your example. Jobs without these
+optional fields still render fine with the simpler single-Requirements-list
+layout.
+
+**Threaded through the full pipeline again:** WatermelonDB schema bumped to
+version 3 with a migration (`location_category`, `job_identification`,
+`full_address`, `base_pay_salary`, `responsibilities`,
+`preferred_qualifications`), `JobModel`, `jobsSync.ts`, `sql/edgex_schema.sql`,
+and `sql/edgex_jobs_seed.sql` (regenerated with all 14 jobs and every new
+column) all updated together.
+
+**`EdgexChip` is now interactive** — added `selected`/`onPress` props so it
+can act as a filter toggle, while still working as a plain static tag
+everywhere else it's already used (both props are optional).
+
+
 
 
 | Path | Screen |

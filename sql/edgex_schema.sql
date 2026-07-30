@@ -10,6 +10,7 @@ create table if not exists public.jobs (
   title text not null,
   department text not null,
   location text not null,
+  location_category text not null, -- normalized value for the Location filter, e.g. "Bayonne, NJ"
   employment_type text not null,
   role text not null, -- function role, e.g. "Engineering" — Careers page filter
   field text not null, -- technical field, e.g. "Quantum Hardware" — Careers page filter
@@ -17,7 +18,12 @@ create table if not exists public.jobs (
   description text not null default '',
   requirements text not null default '[]', -- JSON-encoded string array
   posted_at date not null default now(),
-  active boolean not null default true
+  active boolean not null default true,
+  job_identification text, -- e.g. "EDGX-2026-04721", shown on richer listings
+  full_address text, -- full street address, shown on richer listings
+  base_pay_salary text, -- e.g. "Bayonne, NJ $195,000.00–$260,000.00"
+  responsibilities text default '[]', -- JSON-encoded string array
+  preferred_qualifications text default '[]' -- JSON-encoded string array
 );
 
 create table if not exists public.applications (

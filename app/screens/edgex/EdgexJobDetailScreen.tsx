@@ -5,7 +5,7 @@ import { Text } from "@/components/Text"
 import { EdgexChip, EdgexListRow, EdgexPrimaryButton } from "@/components/edgex/EdgexPrimitives"
 import { EdgexIllustration } from "@/components/edgex/EdgexIllustration"
 import { EdgexScreenShell } from "@/components/edgex/EdgexScreenShell"
-import type { Job } from "@/content/edgexJobs"
+import { BENEFITS, COMPANY_BLURB, COMPENSATION_PHILOSOPHY, FINE_PRINT, type Job } from "@/content/edgexJobs"
 import type { EdgexStackScreenProps } from "@/navigators/edgexNavigationTypes"
 import { getJob } from "@/services/watermelon/jobsSync"
 import { useAppTheme } from "@/theme/context"
@@ -94,6 +94,11 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
               <EdgexChip label={job.employment_type} fontFamily={typography.primary.medium} outline />
             </View>
 
+            <Text
+              text={COMPANY_BLURB}
+              style={{ color: edgex.textDim, fontSize: 13.5, lineHeight: 20, marginBottom: spacing.lg }}
+            />
+
             {/* Job Information block — only shown on richer listings that have these fields */}
             {job.fullAddress || job.basePaySalary ? (
               <View
@@ -123,6 +128,20 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
                 {job.basePaySalary ? <InfoRow label="Base Pay/Salary" value={job.basePaySalary} /> : null}
               </View>
             ) : null}
+
+            <Text
+              text="Benefits"
+              style={{
+                fontFamily: typography.primary.medium,
+                color: edgex.text,
+                fontSize: 16,
+                marginBottom: spacing.sm,
+              }}
+            />
+            {BENEFITS.map((b) => (
+              <EdgexListRow key={b} text={b} dotColor={edgex.silverBright} spacing={spacing.xs} />
+            ))}
+            <View style={{ height: spacing.lg }} />
 
             <Text
               text="Job Description"
@@ -188,10 +207,39 @@ export const EdgexJobDetailScreen: FC<EdgexJobDetailScreenProps> = function Edge
             ) : null}
 
             <View style={{ marginTop: spacing.lg }}>
+              <Text
+                text="Compensation Philosophy"
+                style={{
+                  fontFamily: typography.primary.medium,
+                  color: edgex.text,
+                  fontSize: 14,
+                  marginBottom: spacing.xs,
+                }}
+              />
+              <Text
+                text={COMPENSATION_PHILOSOPHY}
+                style={{ color: edgex.textDim, fontSize: 12.5, lineHeight: 19, marginBottom: spacing.lg }}
+              />
+
+              <Text
+                text="The Fine Print"
+                style={{
+                  fontFamily: typography.primary.medium,
+                  color: edgex.text,
+                  fontSize: 14,
+                  marginBottom: spacing.xs,
+                }}
+              />
+              <Text
+                text={FINE_PRINT}
+                style={{ color: edgex.steel, fontSize: 11.5, lineHeight: 17, marginBottom: spacing.lg }}
+              />
+
               <EdgexPrimaryButton
                 text="Apply for this role →"
                 onPress={() => navigation.navigate("EdgexApply", { jobId: job.id })}
                 fontFamily={typography.primary.medium}
+                style={{ paddingVertical: 8, paddingHorizontal: 14, alignSelf: "flex-start", fontSize: 12.5 }}
               />
             </View>
           </>
